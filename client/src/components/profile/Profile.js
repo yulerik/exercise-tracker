@@ -17,6 +17,7 @@ export default function Profile(){
       </nav>
       <h1>Welcome @{username}!</h1>
       <Outlet />
+      
     </div>
   )
 }
