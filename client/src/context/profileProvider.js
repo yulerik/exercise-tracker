@@ -12,12 +12,25 @@ userAxios.interceptors.request.use(config => {
 })
 
 export default function ProfileProvider(props) {
+    const userExercisesInit = {
+        ids: [],
+        objects: []
+    }
 
     const [userWorkouts, setUserWorkouts] = useState([])
+    const [allUserExercises, setAllUserExercises] = useState(userExercisesInit)
 
     function getUserWorkouts() {
         userAxios.get('/api/workout/')
-            .then(res => setUserWorkouts(prevState => [...prevState, ...res.data]))
+            .then(res => {
+                const allExercises = []
+                res.data.map(each =>   allExercises.push(...each.exercises))
+                setUserWorkouts(prevState => [...prevState, ...res.data])
+                setAllUserExercises(prevState => ({
+                    ...prevState, 
+                    ids: [...prevState.ids, ...allExercises]
+                }))
+            })
             .catch(err => console.log(err))
     }
     function postNewWorkout(workoutObj) {
@@ -25,10 +38,16 @@ export default function ProfileProvider(props) {
             .then(res => setUserWorkouts(prevState => [...prevState, res.data]))
             .catch(err => console.log(err))
     }
-
-    useEffect(() => {
-        getUserWorkouts()
-    }, [])
+    function getAllUserExercises() {
+        userAxios.get('/api/exercise')
+            .then(res => {
+                setAllUserExercises(prevState => ({
+                    ...prevState,
+                    objects: prevState.ids.map(each => res.data.find(exerciseObj => exerciseObj._id === each))
+                }))
+            })
+            .catch(err => console.log(err))
+    }
     
     return (
         <ProfileContext.Provider 
@@ -36,6 +55,9 @@ export default function ProfileProvider(props) {
                 getUserWorkouts,
                 setUserWorkouts,
                 postNewWorkout,
+                allUserExercises,
+                setAllUserExercises,
+                getAllUserExercises,
                 userWorkouts
         }}>
             {props.children}

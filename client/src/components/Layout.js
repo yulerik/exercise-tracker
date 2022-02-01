@@ -6,7 +6,7 @@ export default function Layout() {
     const { token, logout } = useContext(UserContext)
     return (
         <>
-            <nav style={{ display: !token && 'none' }} >
+            <nav id='nav-home' style={{ display: !token && 'none' }} >
                 <Link to='/profile'>Home</Link>
                 <Link to='/forum'>Forum</Link>
                 <button onClick={logout}>Logout</button>

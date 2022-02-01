@@ -2,8 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ExerciseContext } from '../../context/exerciseProvider'
 import { ProfileContext } from '../../context/profileProvider'
 
-
-
 export default function NewWorkoutForm(props) {
     const {
         abs,
@@ -20,7 +18,7 @@ export default function NewWorkoutForm(props) {
         getAllExercises
      } = useContext(ExerciseContext)
      const { postNewWorkout } = useContext(ProfileContext)
-    
+    // init objects for exer/workout
     const exerciseInit = {
         name : '',
         id: '',
@@ -36,13 +34,15 @@ export default function NewWorkoutForm(props) {
         warmUp: false,
         exercises: []
     }
-
+    // state
     const [category, setCategory] = useState({category: []})
     const [exercise, setExercise] = useState(exerciseInit)
     const [sets, setSets] = useState([])
     const [postedExercises, setPostedExercises] = useState([])
     const [workoutInfo, setWorkoutInfo] = useState(workoutInit)
-
+    const [displayState, setDisplayState] = useState({showPostedExercises: false})
+    // updates exercise category with each change, 
+    // update category list with all exercises for selected category
     function handleCategoryChange(event) {
         const {value} = event.target
         if (value === 'abs') {
@@ -116,9 +116,9 @@ export default function NewWorkoutForm(props) {
             }))
         } 
     }
+    // updates state with exercise change event
     function handleExerciseChange(event) {
-        const { value, textContent } = event.target
-        console.log(value)
+        const { value } = event.target
         const exerciseObj = category.category.find(each => each.uuid === value)
         setExercise(prevState => ({
             ...prevState,
@@ -127,11 +127,7 @@ export default function NewWorkoutForm(props) {
             desc: exerciseObj.description
         }))
     }
-    const exerciseOptions = category.category.map(each => 
-            <option value={each.uuid}>
-                {each.name}
-            </option>
-    )
+
     function handleSets(event) {
         event.preventDefault()
         const { value } = event.target
@@ -173,6 +169,7 @@ export default function NewWorkoutForm(props) {
     }
     function addPostedExercises(event) {
         event.preventDefault()
+        console.dir(event.target)
         setNewWorkoutExercises(prevState => [...prevState, ...postedExercises])
         setPostedExercises([])
     }
@@ -190,7 +187,6 @@ export default function NewWorkoutForm(props) {
                 exercises: prevState.exercises.filter(each => each !== value)
             }))
         }
-
     }
     function handleWorkoutChange(event) {
         const {value, name} = event.target
@@ -199,6 +195,20 @@ export default function NewWorkoutForm(props) {
             [name]: value
         }))
     }
+    function togglePostedExercisesDisplay(event) {
+        event.preventDefault()
+        setDisplayState(prevState => ({
+            ...prevState,
+            showPostedExercises: !prevState.showPostedExercises
+        }))
+    }
+    // populate each option with current category of exercises
+    const exerciseOptions = category.category.map(each => 
+        <option value={each.uuid}>
+            {each.name}
+        </option>
+    )
+    // adds rep form input for each added set   
     const repInputs = sets.length === 0 ? 'add a set' : sets.map(each => 
         <>
             <label>Set #{each.setNum}:</label>
@@ -208,28 +218,27 @@ export default function NewWorkoutForm(props) {
             <input type='number' onChange={handleWeight} id={each.setNum} value={sets[(each.setNum-1)].weight}></input>
         </>
     )
+    // display state for exercises to be added to the workout
     const addedExercises = newWorkoutExercises.map(each => 
-            <div id={each._id}>
-                <h3>{each.name}</h3>
-                <ul style={{textDecoration: 'none'}}>sets: {each.sets.length}
-                    {each.sets.map(eachSet => <li>reps: {eachSet.reps}<br></br>weight: {eachSet.weight}</li>)}
-                </ul>
-            </div>
-        )
-    let allPostedExercises = props.props.map(each => 
-        <>
-            <input name='postedExercise' value={each._id} type='checkbox'></input>
-            <label>{each.name}</label>
-            {each.sets.map(setEach => <label> ({setEach.reps}: {setEach.weight}) |</label>)}
-        </>
+        <div id={each._id}>
+            <h3>{each.name}</h3>
+            <ul style={{listStyle: 'none'}}>sets: {each.sets.length}
+                {each.sets.map(eachSet => <><li>reps: {eachSet.reps}</li><li style={{display: !eachSet.weight && 'none'}} >weight: {eachSet.weight}</li><hr></hr></>)}
+            </ul>
+        </div>
     )
-    
-    useEffect(() => {
-        getAllExercises()
-    }, [])
+    // all previously posted exercises listed as inputs to check
+    const allPostedExercises = props.props.map(each => 
+        <li>
+            <input name='postedExercise' value={each._id} type='checkbox'></input>
+            <label className='exercise-name'>{each.name}</label>
+            <br></br>
+            {each.sets.map(setEach => <label> reps: {setEach.reps} | weight: {setEach.weight}) <br></br></label>)}
+        </li>
+    )
 
     return (
-        <>
+        <div className='new-workout-form'>
             <form onChange={handleWorkoutChange} onSubmit={addWorkout} id='new-workout'> 
                 <label>Date:</label>
                 <input name='date' value={workoutInfo.date} type='date'></input>
@@ -242,14 +251,13 @@ export default function NewWorkoutForm(props) {
                 <label htmlFor='false'>Next time</label>
                 <button style={{display: newWorkoutExercises.length === 0 && 'none'}}>Add Workout</button>
             </form>
-            <form name='postedExercises' onChange={handlePostedExercisesChange} onSubmit={addPostedExercises}>
-                <label>Add a previous exercise:</label>
-                <ul>
+            <form style={{height: '230px'}} id='posted-exercises' name='postedExercises' onChange={handlePostedExercisesChange} onSubmit={addPostedExercises}>
+                <button onClick={togglePostedExercisesDisplay}>Add a previous exercise:</button>
+                <ul style={{ display: !displayState.showPostedExercises && 'none', width: '180px', height: 'auto', overflow: 'auto' }}>
                     {allPostedExercises}
                 </ul>
-                <button>Add exercises</button>
+                <button style={{ display: !displayState.showPostedExercises && 'none' }}>Add exercises</button>
             </form>
-            {addedExercises}
             <form onSubmit={addExercise} id='new-exercise'>
                 <label>select an exercise category:</label>
                 <select onChange={handleCategoryChange}>
@@ -268,8 +276,11 @@ export default function NewWorkoutForm(props) {
                 <label>Sets:</label>
                 <button value='minus' onClick={handleSets}>Minus</button><p>{sets.length}</p><button value='add' onClick={handleSets}>Plus</button> 
                 {repInputs}
-                <button>Add Exercise</button>
+                <button style={{display: sets.length === 0 && 'none'}}>Add Exercise</button>
             </form>
-        </>
+            <div id='added-exercises'>
+                {addedExercises}
+            </div>
+        </div>
     )
 }

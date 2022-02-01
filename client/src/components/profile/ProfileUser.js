@@ -5,8 +5,8 @@ export default function ProfileUser(props) {
 
     return (
         <>
-            <h2>Profile User functions, ie add/edit</h2>
-            <NewWorkoutForm {...props} />
+            <h2>Create a new workout</h2>
+            <NewWorkoutForm key='newWorkout' {...props} />
         </>
     )
 }
