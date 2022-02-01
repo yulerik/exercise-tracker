@@ -6,16 +6,22 @@ import Forum from './components/forum/Forum.js'
 import WrongRoute from './components/WrongRoute.js'
 import { UserContext } from './context/UserProvider.js'
 import Workout from './components/profile/Workout.js'
+import ProfileHome from './components/profile/ProfileHome'
+import ProfileUser from './components/profile/ProfileUser'
 import Layout from './components/Layout'
+import { ExerciseContext } from './context/exerciseProvider'
 
 export default function App(){
   const { token } = useContext(UserContext)
+  const { userExercises } = useContext(ExerciseContext)
   return (
     <>
       <Routes>
         <Route path='/' element={<Layout />} >
           <Route index element={ token ? <Navigate to='/profile' /> : <Auth /> } />
           <Route path='profile' element={ token ? <Profile /> : <Navigate to='/' replace /> } >
+            <Route index element={ token ? <ProfileHome /> : <Navigate to='/' replace /> } />
+            <Route path='user' element={ token ? <ProfileUser props={userExercises} /> : <Navigate to='/' replace /> } />
             <Route path='workouts' element= { token ? <Workout /> : <Navigate to='/' replace /> } />
           </Route>
           <Route path='forum' element={ token ? <Forum /> : <Navigate to='/' replace /> } />
@@ -23,8 +29,5 @@ export default function App(){
         </Route>
       </Routes>
     </>
-
-
-
   )
 }
