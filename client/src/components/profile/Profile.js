@@ -31,9 +31,9 @@ export default function Profile(){
   return (
     <div className="profile">
       <nav id='nav-profile'>
-        <Link to='/profile'>Profile</Link>
-        <Link to='/profile/user'>User</Link>
-        <Link to='/profile/workouts/'>Workouts</Link>
+        <Link to='/profile' >Home</Link>
+        <Link to='/profile/user'>New</Link>
+        <Link to='/profile/workouts/' state={userWorkouts}>All</Link>
       </nav>
       <h1>Welcome @{username}!</h1>
       <Outlet />

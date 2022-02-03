@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { ExerciseContext } from '../../context/exerciseProvider'
 import { ProfileContext } from '../../context/profileProvider'
 
@@ -13,9 +13,7 @@ export default function NewWorkoutForm(props) {
         shoulders,
         postNewExercise,
         newWorkoutExercises,
-        setNewWorkoutExercises,
-        userExercises,
-        getAllExercises
+        setNewWorkoutExercises
      } = useContext(ExerciseContext)
      const { postNewWorkout } = useContext(ProfileContext)
     // init objects for exer/workout
@@ -29,13 +27,14 @@ export default function NewWorkoutForm(props) {
         }
     }
     const workoutInit = {
+        title: '',
         date: '',
         duration: 0,
-        warmUp: false,
+        warmUp: false,  
         exercises: []
     }
     // state
-    const [category, setCategory] = useState({category: []})
+    const [category, setCategory] = useState({ category: [] })
     const [exercise, setExercise] = useState(exerciseInit)
     const [sets, setSets] = useState([])
     const [postedExercises, setPostedExercises] = useState([])
@@ -127,7 +126,7 @@ export default function NewWorkoutForm(props) {
             desc: exerciseObj.description
         }))
     }
-
+    // updates state to add new rep obj for change of set #
     function handleSets(event) {
         event.preventDefault()
         const { value } = event.target
@@ -136,6 +135,7 @@ export default function NewWorkoutForm(props) {
         // filter out last setNum when equal to length of array
         else if (value === 'minus') setSets(prevState => prevState.filter(each => each.setNum !== prevState.length))
     }
+    // updates state for rep # change
     function handleReps(event) {
         const {value, id} = event.target
         setSets(prevState => {
@@ -143,6 +143,7 @@ export default function NewWorkoutForm(props) {
             return [...prevState]
         })
     }
+    // updates state for weight change
     function handleWeight(event) {
         const {value, id} = event.target
         setSets(prevState => {
@@ -150,9 +151,9 @@ export default function NewWorkoutForm(props) {
             return [...prevState]
         })
     }
+    // posts new exercise to db, adds exercise to list of new workout exercises
     function addExercise(event) {
         event.preventDefault()
-
         const newExercise = {
             ...exercise,
             sets
@@ -162,17 +163,27 @@ export default function NewWorkoutForm(props) {
         setSets([])
         setCategory({category: []})
     }
+
     function addWorkout(event) {
         event.preventDefault()
         postNewWorkout(workoutInfo)
+        // clear all inputs and values to defaults
         setWorkoutInfo(workoutInit)
+        setPostedExercises([])
+        setSets([])
+        setCategory({ category: [] })
+        setExercise(exerciseInit)
+        setDisplayState({ showPostedExercises: false })
+        setNewWorkoutExercises([])
+        
     }
+    // adds previously posted exercise to current new exercises for workout
     function addPostedExercises(event) {
         event.preventDefault()
-        console.dir(event.target)
         setNewWorkoutExercises(prevState => [...prevState, ...postedExercises])
         setPostedExercises([])
     }
+    // updates state when checkboxs checked/unchecked
     function handlePostedExercisesChange(event) {
         const {value, checked} = event.target
         if (checked) {
@@ -188,6 +199,7 @@ export default function NewWorkoutForm(props) {
             }))
         }
     }
+    // updates state for every change of workout
     function handleWorkoutChange(event) {
         const {value, name} = event.target
         setWorkoutInfo(prevState => ({
@@ -195,6 +207,7 @@ export default function NewWorkoutForm(props) {
             [name]: value
         }))
     }
+    // shows/hides all posted exercises on click
     function togglePostedExercisesDisplay(event) {
         event.preventDefault()
         setDisplayState(prevState => ({
@@ -239,16 +252,24 @@ export default function NewWorkoutForm(props) {
 
     return (
         <div className='new-workout-form'>
-            <form onChange={handleWorkoutChange} onSubmit={addWorkout} id='new-workout'> 
+            <form onChange={handleWorkoutChange} onSubmit={addWorkout} name='newWorkout' id='new-workout'> 
+                <label>Title:</label>
+                <input name='title' type='text' value={workoutInfo.title}></input>
                 <label>Date:</label>
                 <input name='date' value={workoutInfo.date} type='date'></input>
                 <label>Duration(minutes):</label>
                 <input name='duration' value ={workoutInfo.duration} type='number'></input>
-                <label name='warmUp'>warmup:</label>
-                <input type='radio' name='warmUp' id='true' value='true'></input>
-                <label htmlFor='true'>Yes</label>
-                <input type='radio' name='warmUp' id='false' value='false'></input>
-                <label htmlFor='false'>Next time</label>
+                <ul>
+                    <label name='warmUp'>warmup:</label>
+                    <li>
+                        <input type='radio' name='warmUp' id='true' value='true'></input>
+                        <label htmlFor='true'>Yes</label>
+                    </li>
+                    <li>
+                        <input type='radio' name='warmUp' id='false' value='false'></input>
+                        <label htmlFor='false'>Next time</label>   
+                    </li>
+                </ul>
                 <button style={{display: newWorkoutExercises.length === 0 && 'none'}}>Add Workout</button>
             </form>
             <form style={{height: '230px'}} id='posted-exercises' name='postedExercises' onChange={handlePostedExercisesChange} onSubmit={addPostedExercises}>
@@ -258,7 +279,7 @@ export default function NewWorkoutForm(props) {
                 </ul>
                 <button style={{ display: !displayState.showPostedExercises && 'none' }}>Add exercises</button>
             </form>
-            <form onSubmit={addExercise} id='new-exercise'>
+            <form name='newExercise' onSubmit={addExercise} id='new-exercise'>
                 <label>select an exercise category:</label>
                 <select onChange={handleCategoryChange}>
                     <option value='' >choose category</option>

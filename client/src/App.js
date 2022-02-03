@@ -8,12 +8,15 @@ import { UserContext } from './context/UserProvider.js'
 import Workout from './components/profile/Workout.js'
 import ProfileHome from './components/profile/ProfileHome'
 import ProfileUser from './components/profile/ProfileUser'
+import WorkoutCard from './components/profile/WorkoutCard'
 import Layout from './components/Layout'
 import { ExerciseContext } from './context/exerciseProvider'
+import { ProfileContext } from './context/profileProvider'
 
 export default function App(){
   const { token } = useContext(UserContext)
   const { userExercises } = useContext(ExerciseContext)
+  const { deleteWorkout,findSpecificWorkoutObj } = useContext(ProfileContext)
   return (
     <>
       <Routes>
@@ -22,7 +25,9 @@ export default function App(){
           <Route path='profile' element={ token ? <Profile /> : <Navigate to='/' replace /> } >
             <Route index element={ token ? <ProfileHome /> : <Navigate to='/' replace /> } />
             <Route path='user' element={ token ? <ProfileUser props={userExercises} /> : <Navigate to='/' replace /> } />
-            <Route path='workouts' element= { token ? <Workout /> : <Navigate to='/' replace /> } />
+            <Route path='workouts' element= { token ? <Workout props={deleteWorkout} /> : <Navigate to='/' replace /> } >
+              <Route path=':workoutId' element= { token ? <WorkoutCard props={deleteWorkout} /> : <Navigate to='/' repalce /> } />
+            </Route>
           </Route>
           <Route path='forum' element={ token ? <Forum /> : <Navigate to='/' replace /> } />
           <Route path='*' element={ token ? <WrongRoute /> : <Navigate to ='/' replace /> } />

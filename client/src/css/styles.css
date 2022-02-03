@@ -27,10 +27,10 @@
 }
 
 .auth-container > form {
-  border: 1px solid #3339;
+  border: 1px solid rgb(0, 94, 109);
   padding: 20px;
   border-radius: 5px;
-  background-color: #aaa9;
+  background-color: rgba(0, 217, 255);
 
   display: flex;
   flex-direction: column;
@@ -46,12 +46,15 @@
   margin: 16px 8px;
   padding: 8px;
   border-radius: 4px;
+  background-color: rgb(0, 94, 109);
+  color: whitesmoke;
 }
 .public {
   height: 100vh;
 }
 
 .profile {
+  padding-top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -60,6 +63,7 @@
 
 .profile > h1 {
   margin: 8px;
+  margin-top: 50px;
   font-size: 2em;
   text-align: center;
 }
@@ -76,13 +80,46 @@
 .new-workout-form > form {
   display: flex;
   flex-direction: column;
-  margin: 16px 0;
+  margin: 10px 5px;
   border: 1px solid #3339;
-  background-color: #aaa9;
+  background-color:rgb(0, 221, 255); 
   padding: 16px;
   border-radius: 5px;
   grid-row: 1/2;
 }
+.new-workout-form input {
+  background-color:rgb(127, 175, 182);
+}
+.workout {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  width: 100%;
+  justify-items: center;
+}
+.all-workout-links {
+  grid-column: 1/5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.all-workout-links > * {
+  border: 1px solid black;
+  margin: 2.3px;
+  padding: 2.3px;
+  border-radius: 5px;
+}
+.workout-card {
+  grid-column: 5/7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.workout-card ul {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 #new-workout {
   grid-column: 1/5;
   
@@ -109,4 +146,33 @@
   border: 1px solid black;
   border-radius: 5px;
   padding: 2.3px;
+}
+#nav-home {
+  display: flex;
+  position: fixed;
+  height: 50px;
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: rgb(0, 94, 109);
+}
+#nav-home a {
+  margin: 15px;
+  color:rgb(0, 221, 255);
+}
+#nav-profile {
+  display: flex;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color:rgb(0, 221, 255);
+  border-bottom: 2px solid rgb(0, 94, 109);
+}
+#nav-profile > * {
+  margin: 2px 30px;
+  border: 1px solid black;
+  padding: 10px 20px;
+  border-radius: 20px;
+  background-color: palevioletred;
 }

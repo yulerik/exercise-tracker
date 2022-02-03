@@ -7,7 +7,7 @@ export default function Layout() {
     return (
         <>
             <nav id='nav-home' style={{ display: !token && 'none' }} >
-                <Link to='/profile'>Home</Link>
+                <Link to='/profile'>Profile</Link>
                 <Link to='/forum'>Forum</Link>
                 <button onClick={logout}>Logout</button>
             </nav>

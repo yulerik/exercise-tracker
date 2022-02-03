@@ -20,6 +20,10 @@ const workoutSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User'
+    },
+    title: {
+        type: String,
+        require: true
     }
 })
 

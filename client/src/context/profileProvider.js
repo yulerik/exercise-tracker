@@ -20,6 +20,14 @@ export default function ProfileProvider(props) {
     const [userWorkouts, setUserWorkouts] = useState([])
     const [allUserExercises, setAllUserExercises] = useState(userExercisesInit)
 
+    function deleteWorkout(workoutId) {
+        userAxios.delete(`/api/workout/${workoutId}`)
+            .then(res => setUserWorkouts(prevState => prevState.filter(each => each._id !== res.data._id)))
+            .catch(err => console.log(err))
+    }
+    function findExerciseObj(exerciseId) {
+        return allUserExercises.objects.find(each => each._id === exerciseId)
+    }
     function getUserWorkouts() {
         userAxios.get('/api/workout/')
             .then(res => {
@@ -29,6 +37,12 @@ export default function ProfileProvider(props) {
                 setAllUserExercises(prevState => ({
                     ...prevState, 
                     ids: [...prevState.ids, ...allExercises]
+                }))
+                setUserWorkouts(prevState => prevState.map(each => {
+                    const dateArray = each.date.split('')
+                    dateArray.splice(10)
+                    each.date = dateArray.join('')
+                    return each
                 }))
             })
             .catch(err => console.log(err))
@@ -45,9 +59,18 @@ export default function ProfileProvider(props) {
                     ...prevState,
                     objects: prevState.ids.map(each => res.data.find(exerciseObj => exerciseObj._id === each))
                 }))
+                setUserWorkouts(prevState => prevState.map(each => {
+                    const exerciseObjs = each.exercises.map(exerciseId => res.data.find(exerciseObj => exerciseObj._id === exerciseId))
+                    each.exercises = exerciseObjs
+                    return each
+                    }))
             })
             .catch(err => console.log(err))
     }
+    function findSpecificWorkoutObj(workoutId) {
+        return userWorkouts.find(workout => workout._id === workoutId)
+    }
+    
     
     return (
         <ProfileContext.Provider 
@@ -58,7 +81,9 @@ export default function ProfileProvider(props) {
                 allUserExercises,
                 setAllUserExercises,
                 getAllUserExercises,
-                userWorkouts
+                findSpecificWorkoutObj,
+                userWorkouts,
+                deleteWorkout
         }}>
             {props.children}
         </ProfileContext.Provider>
