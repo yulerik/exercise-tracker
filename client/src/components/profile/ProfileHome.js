@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom'
 export default function ProfileHome() {
 
     return (
-        <>
-            <h1>Welcome, this is the profile home page.</h1>
-            <h2><Link to='/profile/user'>Add a new Workout</Link></h2>
-            <h2><Link to='/profile/workouts'>View All Workouts</Link></h2>
-        </>
+        <div className='text-center'>
+            <h1>This is your home page.</h1>
+            <p>Click on New to add exercises to a workout. Or click All to view/edit all your workouts.</p>
+            <Link className='btn btn-success btn-xs' to='/profile/user'>Add a new Workout</Link>
+            <Link className='btn btn-success btn-xs' to='/profile/workouts'>View All Workouts</Link>
+        </div>
     )
 }

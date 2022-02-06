@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 
 export const ExerciseContext = React.createContext()
@@ -109,8 +109,7 @@ export default function ExerciseProvider(props){
                 }))
             })
     }
-
-    useEffect(() => {
+    function getAllCategories(){
         getAbs()
         getArms()
         getBack()
@@ -118,7 +117,7 @@ export default function ExerciseProvider(props){
         getChest()
         getLegs()
         getShoulders()
-    }, [])
+    }
 
     return (
         <ExerciseContext.Provider
@@ -127,7 +126,8 @@ export default function ExerciseProvider(props){
               postNewExercise,
               getAllExercises,
               setNewWorkoutExercises,
-              newWorkoutExercises
+              newWorkoutExercises,
+              getAllCategories
         }}>
             { props.children }
         </ExerciseContext.Provider>

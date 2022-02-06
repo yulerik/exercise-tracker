@@ -34,8 +34,8 @@ export default function Auth(){
   }
 
   return (
-    <div className="auth-container">
-      <h1>Exercise Tracker</h1>
+    <div className='flex flex-col items-center h-full gap-8 pt-10'>
+      <h1 className='text-3xl tracking-wider underline underline-offset-8'>Exercise Tracker</h1>
       { !toggle ?
         <>
           <AuthForm 
@@ -45,7 +45,7 @@ export default function Auth(){
             btnText="Sign up"
             errMsg={errMsg}
           />
-          <p onClick={toggleForm}>Already a member?</p>
+          <p className='btn btn-outline' onClick={toggleForm}>Already a member?</p>
         </>
       :
         <>
@@ -56,7 +56,7 @@ export default function Auth(){
             btnText="Login"
             errMsg={errMsg}
           />
-          <p onClick={toggleForm}>Not a member?</p>
+          <p className='btn btn-outline' onClick={toggleForm}>Not a member?</p>
         </>
       }
     </div>
