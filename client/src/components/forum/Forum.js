@@ -1,22 +1,26 @@
 import React, { useContext } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { ForumContext } from '../../context/forumProvider'
+import { UserContext } from '../../context/UserProvider'
 
 
 export default function Forum(){
+  const { 
+    user: { 
+      username 
+    }
+  } = useContext(UserContext)
   const forumContextValue = useContext(ForumContext)
 
   return (
-    <div className="pt-20 bg-emerald-500">
-      <nav id='nav-forum'>
-        <Link to='/forum'>Forum</Link>
-        <Link to='/forum/share'>Share</Link>
-        <Link to='/forum/public/'>All</Link>
+    <div className='forum pt-16 w-full flex flex-col items-center h-full'>
+      <nav id='nav-forum' className='bg-emerald-300 w-5/12 rounded-full p-2 flex flex-row w-1/12 justify-around'>
+        <Link className='text-slate-700 btn btn-outline btn-sm rounded-full' to='/forum'>Forum</Link>
+        <Link className='text-slate-700 btn btn-outline btn-sm rounded-full' to='/forum/share'>Share</Link>
+        <Link className='text-slate-700 btn btn-outline btn-sm rounded-full' to='/forum/public/'>All</Link>
       </nav>
-      <h3>public forum</h3>
-      <div className='forum-outlet'>
-        <Outlet />
-      </div>
+      <h1 className="text-3xl text-emerald-500 pt-2 pb-2 font-bold" >Hello @{username}!</h1>
+      <Outlet />
     </div>
   )
 }

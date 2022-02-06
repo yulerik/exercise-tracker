@@ -2,10 +2,29 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const forumSchema = new Schema({
-    workout: {
+    question: {
+        type: String,
+        required: true
+    },
+    category: {
+        type: String,
+        enum: ['other', 'cardio', 'weights'],
+        required: true,
+        default: 'other'
+    },
+    subcategory: {
+        type: String,
+        default: 'other',
+        required: true
+    },
+    likes: [{
         type: Schema.Types.ObjectId,
-        ref: 'Workout'
-    }
+        ref: 'User'
+    }],
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'QuestionComment'
+    }]
 
 })
 

@@ -13,6 +13,7 @@ import Layout from './components/Layout'
 import ForumHome from './components/forum/ForumHome'
 import ForumAll from './components/forum/ForumAll'
 import ForumShare from './components/forum/ForumShare'
+import ForumCard from './components/forum/ForumCard'
 import { ExerciseContext } from './context/exerciseProvider'
 import { ProfileContext } from './context/profileProvider'
 import { ForumContext } from './context/forumProvider'
@@ -22,12 +23,15 @@ export default function App(){
   const { userExercises, getAllCategories, getAllExercises } = useContext(ExerciseContext)
   const { deleteWorkout, userWorkouts, getAllUserExercises, getUserWorkouts } = useContext(ProfileContext)
   const allForumContext = useContext(ForumContext)
+  const { getAllForum, getQuestion, oneForum, likeQuestion } = useContext(ForumContext)
 
   useEffect(() => {
     getAllCategories()
     getUserWorkouts()
     getAllExercises()
     getAllUserExercises()
+    getAllForum()
+
   }, [])
   
   return (
@@ -43,7 +47,8 @@ export default function App(){
             </Route>
           </Route>
           <Route path='forum' element={ token ? <Forum /> : <Navigate to='/' replace /> }>
-          <Route index element={ token ? <ForumHome {...allForumContext} /> : <Navigate to='/' replace /> } />
+            <Route index element={ token ? <ForumHome {...allForumContext} /> : <Navigate to='/' replace /> } /> 
+            <Route path=':forumId' element={ token ? <ForumCard {...oneForum} like={likeQuestion} props={getQuestion} /> : <Navigate to='/' replace /> } />
             <Route path='share' element={ token ? <ForumShare allWorkouts={userWorkouts} /> : <Navigate to='/' replace /> } />
             <Route path='public' element= { token ? <ForumAll /> : <Navigate to='/' replace /> } />
           </Route>
