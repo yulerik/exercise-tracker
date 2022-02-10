@@ -2,6 +2,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const workoutSchema = new Schema({
+    createdOn: {
+        type: Date,
+        default: Date.now
+    },
     date: {
         type: Date,
         required: true
@@ -23,8 +27,19 @@ const workoutSchema = new Schema({
     },
     title: {
         type: String,
-        require: true
-    }
+        required: true
+    },
+    shared: {
+        isShared: {
+            type: Boolean,
+            default: false,
+            required: true
+        },
+        sharedId: [{
+            type: Schema.Types.ObjectId,
+            ref: 'SharedWorkout'
+        }]
+    }   
 })
 
 module.exports = mongoose.model('Workout', workoutSchema)

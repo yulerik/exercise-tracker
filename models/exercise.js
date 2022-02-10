@@ -13,7 +13,11 @@ const exerciseSchema = new Schema({
         reps: Number,
         setNum: Number,
         weight: Number
-    }]
+    }],
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }
 })
 
 module.exports = mongoose.model('Exercise', exerciseSchema)

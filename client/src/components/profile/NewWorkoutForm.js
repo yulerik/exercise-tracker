@@ -4,7 +4,6 @@ import { ProfileContext } from '../../context/profileProvider'
 
 import { TrashIcon } from '@heroicons/react/solid'
 
-
 export default function NewWorkoutForm(props) {
     const {
         abs,
@@ -159,10 +158,9 @@ export default function NewWorkoutForm(props) {
         event.preventDefault()
         const newExercise = {
             ...exercise,
-            sets
+            sets: [...sets]
         }
         postNewExercise(newExercise)
-        setExercise(exerciseInit)
         setSets([])
         setCategory({category: []})
     }
@@ -218,49 +216,6 @@ export default function NewWorkoutForm(props) {
             showPostedExercises: !prevState.showPostedExercises
         }))
     }
-    // populate each option with current category of exercises
-    const exerciseOptions = category.category.map(each => 
-        <option value={each.uuid}>
-            {each.name}
-        </option>
-    )
-    // adds rep form input for each added set   
-    const repInputs = sets.length === 0 ? '' : sets.map(each => 
-        <li className='grid grid-cols-8 grid-rows-3 justify-items-center gap-1'>
-            <label className='col-start-1 col-end-9 row-start-1 row-end-2 self-center'>Set #{each.setNum}:</label>
-            <label className='col-start-1 col-end-5 row-start-2 row-end-3'>Reps:</label>
-            <input className='col-start-1 col-end-5 row-start-3 row-end-4 input input-bordered' id={each.setNum} onChange={handleReps} type='number' value={sets[(each.setNum-1)].reps}></input>
-            <label className='col-start-5 col-end-9 row-start-2 row-end-3' >Weight(lbs.):</label>
-            <input className='col-start-5 col-end-9 row-start-3 row-end-4 input input-bordered'  type='number' onChange={handleWeight} id={each.setNum} value={sets[(each.setNum-1)].weight}></input>
-        </li>
-    )
-    // display state for exercises to be added to the workout
-    const addedExercises = newWorkoutExercises.map(each => 
-            <div className='collapse collapse-arrow w-full border rounded-box border-base-300 ' id={each._id}>
-                <input type='checkbox'></input>
-                <span className='collapse-title' ><h3>{each.name}</h3><h5>Sets: {each.sets.length}</h5></span>
-                <ul className='collapse-content text-white' style={{listStyle: 'none'}}>
-                    {each.sets.map(eachSet => <><li>reps: {eachSet.reps}</li><li style={{display: !eachSet.weight && 'none'}} >weight: {eachSet.weight}</li></>)}
-                    <li>
-                        <button className=''>
-                            <TrashIcon className='h-5 w-5 text-red-500'/>
-                        </button>
-                    </li>
-                </ul>
-            </div>
-    )
-    // all previously posted exercises listed as inputs to check
-    const allPostedExercises = props.props.map(each => 
-        <li className='dropdown dropdown-hover cursor-pointer label carousel-item border-1 border-black text-zinc-100 '>
-            <label className='btn btn-sm'>sets: {each.sets.length}</label>
-            <ul className='p-2 shadow menu dropdown-content bg-base-100 rounded-box'>
-                {each.sets.map(setEach => <label> reps: {setEach.reps}{setEach.weight === 0 ? '' : ` | weight: ${setEach.weight}`}</label>)}
-            </ul>
-            <label className='exercise-name'>{each.name}</label>
-            <input className='checkbox' name='postedExercise' value={each._id} type='checkbox'></input>
-        </li>
-    )
-    const showPostedExercisesColor = !displayState.showPostedExercises && 'bg-cyan-500 text-slate-300'
 
     return (
         <div  className='new-workout-form flex flex-col items-center w-full'>
@@ -283,7 +238,7 @@ export default function NewWorkoutForm(props) {
                     </li>
                 </ul>
             </form>
-            <button className='btn border-none bg-sky-500 btn-sm' /*style={{display: newWorkoutExercises.length === 0 && 'none'}}*/>Add Workout</button>
+            <button onClick={addWorkout} className='btn border-none bg-lime-500 text-neutral hover:text-white' /*style={{display: newWorkoutExercises.length === 0 && 'none'}}*/>Add Workout</button>
             <div className='w-full grid grid-cols-3 gap-2 justify-items-center h-full'>
                 <div className='bg-indigo-400 col-start-1 col-end-2 w-10/12 rounded-lg p-2 m-2' >
                     <form className='w-full flex flex-col items-center gap-2 form-control' name='newExercise' onSubmit={addExercise} id='new-exercise'>
@@ -292,33 +247,67 @@ export default function NewWorkoutForm(props) {
                             <option value='' >choose category</option>
                             <option value='abs' >Abs</option>
                             <option value='arms' >Arms</option>
-                            <option id='category' value='calves' >Calves</option>
+                            <option value='calves' >Calves</option>
                             <option value='chest' >Chest</option>
                             <option value='legs' >Legs</option>
                             <option value='shoulders' >Shoulders</option>
                         </select>
                         <select className='select select-bordered select-primary w-full' onChange={handleExerciseChange}>
                             <option>select an exercise</option>
-                            {exerciseOptions}
+                            {category.category.map(each => 
+                                <option value={each.uuid}>
+                                    {each.name}
+                                </option>
+                            )}
                         </select>
                         <label className='underline underline-offset-4 tracking-widest'>Sets:</label>
                         <button className='btn btn-xs btn-primary' value='minus' onClick={handleSets}>Minus</button><p>{sets.length}</p><button className='btn btn-xs btn-primary' value='add' onClick={handleSets}>Plus</button> 
                         <ul className='text-xl tracking-wider'>
-                            {repInputs}
+                            {sets.length === 0 ? '' : sets.map(each => 
+                                <li className='grid grid-cols-8 grid-rows-3 justify-items-center gap-1'>
+                                    <label className='col-start-1 col-end-9 row-start-1 row-end-2 self-center'>Set #{each.setNum}:</label>
+                                    <label className='col-start-1 col-end-5 row-start-2 row-end-3'>Reps:</label>
+                                    <input className='col-start-1 col-end-5 row-start-3 row-end-4 input input-bordered' id={each.setNum} onChange={handleReps} type='number' value={sets[(each.setNum-1)].reps}></input>
+                                    <label className='col-start-5 col-end-9 row-start-2 row-end-3' >Weight(lbs.):</label>
+                                    <input className='col-start-5 col-end-9 row-start-3 row-end-4 input input-bordered'  type='number' onChange={handleWeight} id={each.setNum} value={sets[(each.setNum-1)].weight}></input>
+                                </li>
+                            )}
                         </ul>
                         <button style={{display: sets.length === 0 && 'none'}}>Add Exercise</button>
                     </form>
                 </div>
                 <form className='bg-sky-700 w-10/12 flex flex-col items-center col-start-2 col-end-3 pb-2 mt-2 rounded-xl' style={{height: '230px'}} id='posted-exercises' name='postedExercises' onChange={handlePostedExercisesChange} onSubmit={addPostedExercises}>
-                    <button className={`btn btn-outline btn-sm m-2 ${showPostedExercisesColor}`} onClick={togglePostedExercisesDisplay}>Add a previous exercise:</button>
+                    <button className={`btn btn-outline btn-sm m-2 ${!displayState.showPostedExercises && 'bg-cyan-500 text-slate-300'}`} onClick={togglePostedExercisesDisplay}>Add a previous exercise:</button>
                     <ul className='w-11/12 form-control carousel rounded-box' style={{ display: !displayState.showPostedExercises && 'none'}}>
-                        {allPostedExercises}
+                        {props.props.map(each => 
+                            <li className='dropdown dropdown-hover cursor-pointer label carousel-item border-1 border-black text-zinc-100 '>
+                                <label className='btn btn-sm'>sets: {each.sets.length}</label>
+                                <ul className='p-2 shadow menu dropdown-content bg-base-100 rounded-box'>
+                                    {each.sets.map(setEach => <label> reps: {setEach.reps}{setEach.weight === 0 ? '' : ` | weight: ${setEach.weight}`}</label>)}
+                                </ul>
+                                <label className='exercise-name'>{each.name}</label>
+                                <input className='checkbox' name='postedExercise' value={each._id} type='checkbox'></input>
+                            </li>
+                        )}
                     </ul>
                     <button className='btn btn-xs' style={{ display: !displayState.showPostedExercises && 'none' }}>Add exercises</button>
                 </form>
                 <div className='col-start-3 col-end-4 row-start-1' id='added-exercises'>
                 <h4>Workout Exercises</h4>
-                    {addedExercises}
+                    {newWorkoutExercises.map(each => 
+                        <div className='collapse collapse-arrow w-full border rounded-box border-base-300 ' id={each._id}>
+                            <input type='checkbox'></input>
+                            <span className='collapse-title' ><h3>{each.name}</h3><h5>Sets: {each.sets.length}</h5></span>
+                            <ul className='collapse-content text-white' style={{listStyle: 'none'}}>
+                                {each.sets.map(eachSet => <><li>reps: {eachSet.reps}</li><li style={{display: !eachSet.weight && 'none'}} >weight: {eachSet.weight}</li></>)}
+                                <li>
+                                    <button className=''>
+                                        <TrashIcon className='h-5 w-5 text-red-500'/>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

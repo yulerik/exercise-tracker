@@ -26,10 +26,12 @@ export default function ExerciseProvider(props){
     const [allExercises, setAllExercises] = useState(initExercises)
     const [newWorkoutExercises, setNewWorkoutExercises] = useState([])
 
-
     function postNewExercise(exerciseObj) {
         userAxios.post('/api/exercise', exerciseObj)
-            .then(res => setNewWorkoutExercises(prevState => [...prevState, res.data]))
+            .then(res => {
+                getAllExercises()
+                // setNewWorkoutExercises(prevState => [...prevState, res.data])
+            })
             .catch(err => console.log(err))
     }
 
@@ -43,80 +45,61 @@ export default function ExerciseProvider(props){
             })
             .catch(err => console.log(err))
     }
-    function getAbs() {
-        axios.get('https://wger.de/api/v2/exercise/?category=10&limit=54')
-            .then(res => {
-                setAllExercises(prevState => ({
-                    ...prevState,
-                    abs: res.data.results
-                }))
-            })
-            .catch(err => console.log(err))
-    }
-    function getArms() {
-        axios.get('https://wger.de/api/v2/exercise/?category=8&limit=76')
-            .then(res => {
-                setAllExercises(prevState => ({
-                    ...prevState,
-                    arms: res.data.results
-                }))
-            })
-    }
-    function getBack() {
-        axios.get('https://wger.de/api/v2/exercise/?category=12&limit=72')
-            .then(res => {
-                setAllExercises(prevState => ({
-                    ...prevState,
-                    back: res.data.results
-                }))
-            })
-            .catch(err => console.log(err))
-    }
-    function getCalves() {
-        axios.get('https://wger.de/api/v2/exercise/?category=14')
-            .then(res => {
-                setAllExercises(prevState => ({
-                    ...prevState,
-                    calves: res.data.results
-                }))
-            })
-            .catch(err => console.log(err))
-    }
-    function getChest() {
-        axios.get('https://wger.de/api/v2/exercise/?category=11&limit=58')
-            .then(res => {
-                setAllExercises(prevState => ({
-                    ...prevState,
-                    chest: res.data.results
-                }))
-            })
-    }
-    function getLegs() {
-        axios.get('https://wger.de/api/v2/exercise/?category=9&limit=86')
-            .then(res => {
-                setAllExercises(prevState => ({
-                    ...prevState,
-                    legs: res.data.results
-                }))
-            })
-    }
-    function getShoulders() {
-        axios.get('https://wger.de/api/v2/exercise/?category=13&limit=61')
-            .then(res => {
-                setAllExercises(prevState => ({
-                    ...prevState,
-                    shoulders: res.data.results
-                }))
-            })
-    }
-    function getAllCategories(){
-        getAbs()
-        getArms()
-        getBack()
-        getCalves()
-        getChest()
-        getLegs()
-        getShoulders()
+    const getAllCategories = async () => {
+        try {
+            await axios.get('https://wger.de/api/v2/exercise/?category=8&limit=76')
+                .then(res => {
+                    setAllExercises(prevState => ({
+                        ...prevState,
+                        abs: res.data.results
+                    }))
+                })
+            await axios.get('https://wger.de/api/v2/exercise/?category=8&limit=76')
+                .then(res => {
+                    setAllExercises(prevState => ({
+                        ...prevState,
+                        arms: res.data.results
+                    }))
+                })
+            await axios.get('https://wger.de/api/v2/exercise/?category=12&limit=72')
+                .then(res => {
+                    setAllExercises(prevState => ({
+                        ...prevState,
+                        back: res.data.results
+                    }))
+                })
+            await axios.get('https://wger.de/api/v2/exercise/?category=14')
+                .then(res => {
+                    setAllExercises(prevState => ({
+                        ...prevState,
+                        calves: res.data.results
+                    }))
+                })
+            await axios.get('https://wger.de/api/v2/exercise/?category=11&limit=58')
+                .then(res => {
+                    setAllExercises(prevState => ({
+                        ...prevState,
+                        chest: res.data.results
+                    }))
+                })
+            await axios.get('https://wger.de/api/v2/exercise/?category=9&limit=86')
+                .then(res => {
+                    setAllExercises(prevState => ({
+                        ...prevState,
+                        legs: res.data.results
+                    }))
+                })
+            await axios.get('https://wger.de/api/v2/exercise/?category=13&limit=61')
+                .then(res => {
+                    setAllExercises(prevState => ({
+                        ...prevState,
+                        shoulders: res.data.results
+                    }))
+                })
+        }
+        catch (err) {
+            console.error(err)
+        }   
     }
 
     return (

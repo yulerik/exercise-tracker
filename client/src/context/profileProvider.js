@@ -17,9 +17,19 @@ export default function ProfileProvider(props) {
         objects: []
     }
 
+    // const [mount, setMount] = useState({isMounted: false})
     const [userWorkouts, setUserWorkouts] = useState([])
     const [allUserExercises, setAllUserExercises] = useState(userExercisesInit)
 
+    function shareWorkout(workoutId) {
+        userAxios.post('/api/workout/shared', {"sharedWorkout": workoutId})
+            .then(res => {
+                // setUserWorkouts(prevState => [...prevState, res.data])
+                getUserWorkouts()
+            })
+            .catch((err) => console.log(err))
+    }
+    
     function deleteWorkout(workoutId) {
         userAxios.delete(`/api/workout/${workoutId}`)
             .then(res => setUserWorkouts(prevState => prevState.filter(each => each._id !== res.data._id)))
@@ -83,7 +93,8 @@ export default function ProfileProvider(props) {
                 getAllUserExercises,
                 findSpecificWorkoutObj,
                 userWorkouts,
-                deleteWorkout
+                deleteWorkout,
+                shareWorkout
         }}>
             {props.children}
         </ProfileContext.Provider>

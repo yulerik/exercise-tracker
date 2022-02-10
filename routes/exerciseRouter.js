@@ -5,7 +5,7 @@ const Exercise = require('../models/exercise')
 // get all workouts
 exerciseRouter.get('/', (req, res, next) => {
     req.body.user = req.user._id
-    Exercise.find((err, exercises) => {
+    Exercise.find({user: req.user._id}, (err, exercises) => {
         if (err) {
             res.status(500)
             return next(err)

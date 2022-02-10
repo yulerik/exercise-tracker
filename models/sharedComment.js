@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const questionCommentSchema = new Schema({
+const sharedCommentSchema = new Schema({
     comment: {
         type: String,
         required: true
@@ -10,9 +10,9 @@ const questionCommentSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    questionId: {
+    sharedId: {
         type: Schema.Types.ObjectId,
-        ref: 'Forum',
+        ref: 'SharedWorkouts',
         required: true
     },
     user: {
@@ -20,15 +20,7 @@ const questionCommentSchema = new Schema({
         ref: 'User',
         required: true
     },
-    agree: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }],
-    username: String,
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }
+    username: String
 }) 
 
-module.exports = mongoose.model("question-comment", questionCommentSchema)
+module.exports = mongoose.model("shared-comment", sharedCommentSchema)

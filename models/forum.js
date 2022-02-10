@@ -6,16 +6,17 @@ const forumSchema = new Schema({
         type: String,
         required: true
     },
+    date: {
+        type: Date,
+        default: Date.now
+    },
     category: {
         type: String,
-        enum: ['other', 'cardio', 'weights'],
-        required: true,
         default: 'other'
     },
     subcategory: {
         type: String,
-        default: 'other',
-        required: true
+        default: 'other'
     },
     likes: [{
         type: Schema.Types.ObjectId,
@@ -24,7 +25,12 @@ const forumSchema = new Schema({
     comments: [{
         type: Schema.Types.ObjectId,
         ref: 'QuestionComment'
-    }]
+    }],
+    username: String,
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }
 
 })
 

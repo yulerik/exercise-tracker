@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { FilterIcon } from '@heroicons/react/solid'
+
 
 export const ForumContext = React.createContext()
 
@@ -13,8 +14,18 @@ userAxios.interceptors.request.use(config => {
 })
 
 export default function ForumProvider(props) {
+    const initState = { 
+        user: JSON.parse(localStorage.getItem("user")) || {}, 
+        token: localStorage.getItem("token") || "", 
+        errMsg: ""
+    }
     const initForum = {
         questions: [],
+        userQuestions: [],
+        questionComments: [],
+        exercises: [],
+        allWorkouts: [],
+        notSharedWorkouts: [],
         sharedWorkouts: [],
         questionInputs: {
             question: '',
@@ -22,9 +33,97 @@ export default function ForumProvider(props) {
             subcategory: ''
         }
     }
-
+    // state
+    const [tokenState, setTokenState] = useState(initState)
     const [forum, setForum] = useState(initForum)
-    const [oneForum, setOneForum] = useState({})
+    const [oneForum, setOneForum] = useState({comments: [], info: {}})
+    const [allComments, setAllComments] = useState([])
+    // remove workout from shared db, update shared flag
+    const unshareWorkout = async (workoutId, sharedId) => {
+        try {
+            userAxios.delete(`/api/workout/${workoutId}/${sharedId}`)
+                .then(res => {
+                    getWorkouts()
+                })
+        }
+        catch(err) {
+            console.error(err)
+        }
+    }
+    // add workout to shared db, update shared flag
+    const shareWorkout = async (workoutId) => {
+        try {
+            userAxios.post('/api/workout/shared', {"sharedWorkout": workoutId})
+                .then(res => {
+                    getWorkouts()
+                })
+        }
+        catch(err) {
+            console.error(err)
+        }
+    }
+
+    const getWorkouts = async () => {
+        try {
+            const exercise = await userAxios.get('/api/exercise')
+            setForum(prevState => ({
+                ...prevState,
+                exercises: exercise.data
+            }))
+            const workout = await userAxios.get('/api/workout')
+            setForum(prevState => ({
+                ...prevState,
+                allWorkouts: workout.data.map(workout => {
+                    const exerciseObj = workout.exercises.map(each => {
+                        return prevState.exercises.find(exercise => exercise._id === each)
+                    })
+                    workout.exercises = exerciseObj
+                    const dateArray = workout.date.split('')
+                    dateArray.splice(10)
+                    workout.date = dateArray.join('')
+                    return workout
+                }),
+                sharedWorkouts: workout.data.filter(each => each.shared.isShared),
+                notSharedWorkouts: workout.data.filter(each => !each.shared.isShared)
+            }))
+
+        }
+        catch(err) {
+            console.error(err)
+        }
+    }
+
+    const getForumQuestions = async () => {
+        try {
+            await userAxios.get('/api/forum')
+                .then(res => console.log(res.data))
+        }
+        catch (err) {
+            console.error(err)
+        }
+    }
+
+    function getAllComments(questionId) {
+        userAxios.get(`/api/forum/${questionId}/comments`)
+            .then(res => {
+                setForum(prevState => ({
+                    ...prevState,
+                    questions: prevState.questions.find(each => {
+                        if (each._id === questionId) {
+                            each.comments = res.data
+                            return
+                        }
+                        return
+                    })
+                }))
+            })
+            .catch(err => console.log(err))
+    }
+    function getSpecificComment(forumId, commentId) {
+        userAxios.get(`/api/forum/${forumId}/comments/${commentId}`)
+            .then(res => {return res.data})
+            .catch(err => console.log(err))
+    }
 
     function handleQuestionChange(event) {
         const {name, value} = event.target
@@ -38,6 +137,7 @@ export default function ForumProvider(props) {
     }
     function handleQuestionSubmit(event) {
         event.preventDefault()
+
         userAxios.post('/api/forum/', forum.questionInputs)
             .then(res => {
                 setForum(prevState => ({
@@ -53,49 +153,143 @@ export default function ForumProvider(props) {
             })
             .catch(err => console.log(err))
     }
+    function findComment(id, comments) {
+        const comment = comments.find(each => each._id === id)
+        return comment
+    }
+    const getForumCardInfo = async (forumId) => {
+        try {
+            let forumObj = {
+                info: {},
+                comments: []
+            }
+            const forumInfo = userAxios.get(`/api/forum/${forumId}`)
+                .then(res => {
+                    forumObj.info = res.data
+                    setOneForum(prevState => ({
+                        ...prevState,
+                        info: res.data
+                    }))
+                })
+            const forumComments = userAxios.get(`/api/comment/${forumId}`)
+                .then(res => {
+                    forumObj.comments = res.data
+                    setOneForum(prevState => ({
+                        ...prevState,
+                        comments: res.data
+                    }))
+                })
+            return forumObj
+        }
+        catch(err) {
+            console.error(err)
+        }
+    }
     function getQuestion(forumId) {
         userAxios.get(`/api/forum/${forumId}`)
-            .then(res => setOneForum(res.data))
+            .then(res =>  {
+                res.data.comments = getQuestionComments(forumId)
+                setOneForum(res.data)
+            })
+            .catch(err => console.log(err))
+    }
+    function getQuestionComments(forumId) {
+        userAxios.get(`/api/comment/${forumId}`)
+            .then(res => {
+                setOneForum(prevState => ({
+                    ...prevState,
+                    comments: res.data
+                }))
+            })
+            .catch(err => console.log(err))
+    }
+    function getAllComments() {
+        userAxios.get('/api/comment')
+            .then(res => setAllComments(prevState => [...prevState, ...res.data]))
             .catch(err => console.log(err))
     }
     function getAllForum() {
         userAxios.get('/api/forum/')
             .then(res => {
+
+                getAllComments()
                 setForum(prevState => ({
                     ...prevState,
-                    questions: [...prevState.questions, ...res.data]
+                    questions: res.data,
+                    userQuestions: res.data.filter(each => each.user === tokenState.user._id)
                 }))
             })
             .catch(err => console.log(err))
     }
     function postForumComment(forumId, commentObj) {
-        userAxios.post(`/api/forum${forumId}`, commentObj)
-            .then(res => console.log(res))
-            .catch(err => console.l0g(err))
-    }
-    function likeQuestion(forumId) {
-        userAxios.put(`/api/forum/${forumId}`)
-            .then(res => setForum(prevState => ({
-                ...prevState,
-                questions: prevState.questions.filter(each => {
-                    if (each._id === forumId) {
-                        return res.data
-                    }
-                    return
-                })
-            })))
+        userAxios.post(`/api/forum/${forumId}`, commentObj)
+            .then(res => {
+                getAllForum()
+                setOneForum(prevState => ({
+                    ...prevState,
+                    comments: [...prevState.comments, res.data]
+                }))
+            })
             .catch(err => console.log(err))
     }
+    const postForumCommentUpdated = async (forumId, commentObj) =>  {
+        try {
+            const comment = await userAxios.post(`/api/forum/${forumId}`, commentObj).then(res => {
+                setOneForum(prevState => ({
+                    ...prevState,
+                    comments: [...prevState.comments, res.data]
+                }))
+            })
+        }
+        catch(err) {    
+            console.error(err)
+        }
+    }
+    // like or unlike comment on forum question
+    const likeCommentQuestion = async (forumId, questionId) => {
+        const like = await userAxios.put(`/api/forum/${forumId}/comments/${questionId}`)
+            .then(res =>
+                getQuestionComments(forumId)
+            ).catch(err => console.log(err))
+    }
+    // like or unlike a question
+    const likeQuestion = async (forumId) => {
+        const like = await userAxios.put(`/api/forum/${forumId}/like`)
+            .then(res => getForumCardInfo(forumId))
+            .catch(err => console.log(err))
+    }
+    useEffect(() => {
+        let isMounted = true
+        if (isMounted) {
+            if(tokenState.token) {
+                getAllForum()
+                getWorkouts()
+                console.log('forum context reneder')
+                return () => { isMounted = false }
+            }
+        }
+    }, [tokenState.token])
 
     return (
         <ForumContext.Provider
             value={{
                 ...forum,
+                tokenState,
+                likeCommentQuestion,
+                getWorkouts,
                 handleQuestionChange,
                 handleQuestionSubmit,
                 getAllForum,
                 getQuestion,
                 likeQuestion,
+                postForumComment,
+                getSpecificComment,
+                getAllComments,
+                getForumQuestions,
+                shareWorkout,
+                unshareWorkout,
+                getForumCardInfo,
+                postForumCommentUpdated,
                 oneForum
             }}
         >
