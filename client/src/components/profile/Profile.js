@@ -4,7 +4,7 @@ import { UserContext } from '../../context/UserProvider.js'
 import { ProfileContext } from '../../context/profileProvider'
 import { ExerciseContext } from '../../context/exerciseProvider'
 
-export default function Profile(){
+export default function Profile(props){
   const { 
     user: { 
       username 
@@ -27,7 +27,7 @@ export default function Profile(){
         <Link className='text-slate-700 btn btn-outline btn-sm rounded-full' to='/profile/workouts/' state={userWorkouts}>All</Link>
       </nav>
       <h1 className="text-3xl text-sky-500 pt-2 pb-2 font-bold" >Welcome @{username}!</h1>
-      <Outlet />
+      <Outlet  />
     </div>
   )
 }

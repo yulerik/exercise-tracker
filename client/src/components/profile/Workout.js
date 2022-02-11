@@ -3,7 +3,8 @@ import { Link, Outlet } from 'react-router-dom'
 import { ProfileContext } from '../../context/profileProvider'
 
 export default function Workout(props) {
-    const { userWorkouts } = useContext(ProfileContext)
+    // const { userWorkouts } = useContext(ProfileContext)
+    const { userWorkouts } = props
 
     const workoutLinks = userWorkouts.map(each => 
         <div className='workout-link w-full flex flex-col items-center' id={each._id} >
@@ -43,7 +44,7 @@ export default function Workout(props) {
     return (
         <div className='workout grid grid-cols-8 w-full'>
             <div className='all-workout-links col-start-1 col-end-5'>
-                {props.props.length === 0 ? <Link to='/profile/user' >Click here or on New to add a workout</Link> : workoutLinks}
+                {/* {props.props.length === 0 ? <Link to='/profile/user' >Click here or on New to add a workout</Link> : workoutLinks} */}
             </div>
             <div className='workout-card col-start-5 col-end-9 flex flex-col items-center'>
                 <h1 className='text-4xl underline underline-offset-2 text-lime-400'>View Workout</h1>

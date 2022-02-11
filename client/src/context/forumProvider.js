@@ -65,15 +65,16 @@ export default function ForumProvider(props) {
 
     const getWorkouts = async () => {
         try {
+            console.log('getting workouts')
             const exercise = await userAxios.get('/api/exercise')
             setForum(prevState => ({
                 ...prevState,
-                exercises: exercise.data
+                exercises: [...exercise.data]
             }))
             const workout = await userAxios.get('/api/workout')
             setForum(prevState => ({
                 ...prevState,
-                allWorkouts: workout.data.map(workout => {
+                allWorkouts: [...workout.data.map(workout => {
                     const exerciseObj = workout.exercises.map(each => {
                         return prevState.exercises.find(exercise => exercise._id === each)
                     })
@@ -82,9 +83,9 @@ export default function ForumProvider(props) {
                     dateArray.splice(10)
                     workout.date = dateArray.join('')
                     return workout
-                }),
-                sharedWorkouts: workout.data.filter(each => each.shared.isShared),
-                notSharedWorkouts: workout.data.filter(each => !each.shared.isShared)
+                })],
+                sharedWorkouts: [...workout.data.filter(each => each.shared.isShared)],
+                notSharedWorkouts: [...workout.data.filter(each => !each.shared.isShared)]
             }))
 
         }

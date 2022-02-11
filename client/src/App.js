@@ -7,7 +7,7 @@ import Forum from './components/forum/Forum.js'
 import WrongRoute from './components/WrongRoute.js'
 import ProfileHome from './components/profile/ProfileHome'
 import ProfileUser from './components/profile/ProfileUser'
-import Workout from './components/profile/Workout.js'
+import Workout from './components/profile/WorkoutUpdated'
 import WorkoutCard from './components/profile/WorkoutCard'
 import ForumHome from './components/forum/ForumHome'
 import ForumAll from './components/forum/ForumAll'
@@ -21,7 +21,7 @@ import { ExerciseContext } from './context/exerciseProvider'
 export default function App(){
   const { token } = useContext(UserContext)
   const { userExercises, getAllCategories, getAllExercises } = useContext(ExerciseContext)
-  const { deleteWorkout, userWorkouts, getAllUserExercises, getUserWorkouts } = useContext(ProfileContext)
+  const { deleteWorkout, userWorkouts, getAllUserExercises, getUserWorkouts, getWorkoutsExercises } = useContext(ProfileContext)
   const { getAllForum, getQuestion, oneForum, likeQuestion, postForumComment, getAllComments, shareWorkout } = useContext(ForumContext)
   
   const allForumContext = useContext(ForumContext)
@@ -32,13 +32,14 @@ export default function App(){
     if (isMounted) {
       if (token) {
         getAllCategories()
-        getUserWorkouts()
-        getAllExercises()
-        getAllUserExercises()
+        getWorkoutsExercises()
+        // getUserWorkouts()
+        // getAllExercises()
+        // getAllUserExercises()
         // getAllForum()
         console.log('render')
         return () => { isMounted = false }
-      }
+      } 
     }
   }, [token])
   
@@ -50,9 +51,8 @@ export default function App(){
           <Route path='profile' element={ token ? <Profile /> : <Navigate to='/' replace /> } >
             <Route index element={ token ? <ProfileHome /> : <Navigate to='/' replace /> } />
             <Route path='user' element={ token ? <ProfileUser props={userExercises} /> : <Navigate to='/' replace /> } />
-            <Route path='workouts' element= { token ? <Workout props={deleteWorkout} /> : <Navigate to='/' replace /> } >
-              <Route path=':workoutId' element= { token ? <WorkoutCard props={deleteWorkout} /> : <Navigate to='/' replace /> } />
-            </Route>
+            <Route path='workouts' element= { token ? <Workout {...allProfileContext} /> : <Navigate to='/' replace /> } />
+            <Route path='workouts/:workoutId' element= { token ? <WorkoutCard props={deleteWorkout} /> : <Navigate to='/' replace /> } />
           </Route>
           <Route path='forum' element={ token ? <Forum {...allForumContext} /> : <Navigate to='/' replace /> }>
             <Route index element={ token ? <ForumHome /> : <Navigate to='/' replace /> } /> 

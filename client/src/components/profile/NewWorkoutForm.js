@@ -16,11 +16,11 @@ export default function NewWorkoutForm(props) {
         postNewExercise,
         newWorkoutExercises,
         setNewWorkoutExercises
-     } = useContext(ExerciseContext)
-     const { postNewWorkout } = useContext(ProfileContext)
+    } = useContext(ExerciseContext)
+    const { postNewWorkout, allUserExercises } = useContext(ProfileContext)
     // init objects for exer/workout
     const exerciseInit = {
-        name : '',
+        name: '',
         id: '',
         desc: '',
         category: {
@@ -32,7 +32,7 @@ export default function NewWorkoutForm(props) {
         title: '',
         date: '',
         duration: 0,
-        warmUp: false,  
+        warmUp: false,
         exercises: []
     }
     // state
@@ -41,81 +41,81 @@ export default function NewWorkoutForm(props) {
     const [sets, setSets] = useState([])
     const [postedExercises, setPostedExercises] = useState([])
     const [workoutInfo, setWorkoutInfo] = useState(workoutInit)
-    const [displayState, setDisplayState] = useState({showPostedExercises: false})
+    const [displayState, setDisplayState] = useState({ showPostedExercises: false })
     // updates exercise category with each change, 
     // update category list with all exercises for selected category
     function handleCategoryChange(event) {
-        const {value} = event.target
+        const { value } = event.target
         if (value === 'abs') {
             setCategory(prevState => ({ category: abs }))
             setExercise(prevState => ({
                 ...prevState,
-                category : {
+                category: {
                     title: 'abs',
                     id: 10
                 }
             }))
-        } 
-        else if(value === 'arms') {
+        }
+        else if (value === 'arms') {
             setCategory(prevState => ({ category: arms }))
             setExercise(prevState => ({
                 ...prevState,
-                category : {
+                category: {
                     title: 'arms',
                     id: 8
                 }
             }))
-        } 
-        else if(value === 'back') {
+        }
+        else if (value === 'back') {
             setCategory(prevState => ({ category: back }))
             setExercise(prevState => ({
                 ...prevState,
-                category : {
+                category: {
                     title: 'back',
                     id: 12
                 }
             }))
-        } 
-        else if(value === 'calves') {
+        }
+        else if (value === 'calves') {
             setCategory(prevState => ({ category: calves }))
             setExercise(prevState => ({
                 ...prevState,
-                category : {
+                category: {
                     title: 'calves',
                     id: 14
                 }
             }))
-        } 
-        else if(value === 'chest') {
+        }
+        else if (value === 'chest') {
             setCategory(prevState => ({ category: chest }))
             setExercise(prevState => ({
                 ...prevState,
-                category : {
+                category: {
                     title: 'chest',
                     id: 11
                 }
             }))
-        } 
-        else if(value === 'legs') {
+        }
+        else if (value === 'legs') {
             setCategory(prevState => ({ category: legs }))
             setExercise(prevState => ({
                 ...prevState,
-                category : {
+                category: {
                     title: 'legs',
                     id: 9
                 }
             }))
-        } 
-        else if(value === 'shoulders') {
+        }
+        else if (value === 'shoulders') {
             setCategory(prevState => ({ category: shoulders }))
             setExercise(prevState => ({
                 ...prevState,
-                category : {
+                category: {
                     title: 'shoulders',
                     id: 13
                 }
             }))
-        } 
+        }
     }
     // updates state with exercise change event
     function handleExerciseChange(event) {
@@ -139,17 +139,17 @@ export default function NewWorkoutForm(props) {
     }
     // updates state for rep # change
     function handleReps(event) {
-        const {value, id} = event.target
+        const { value, id } = event.target
         setSets(prevState => {
-            prevState[id-1].reps = Number(value)
+            prevState[id - 1].reps = Number(value)
             return [...prevState]
         })
     }
     // updates state for weight change
     function handleWeight(event) {
-        const {value, id} = event.target
+        const { value, id } = event.target
         setSets(prevState => {
-            prevState[id-1].weight = Number(value)
+            prevState[id - 1].weight = Number(value)
             return [...prevState]
         })
     }
@@ -162,7 +162,7 @@ export default function NewWorkoutForm(props) {
         }
         postNewExercise(newExercise)
         setSets([])
-        setCategory({category: []})
+        setCategory({ category: [] })
     }
 
     function addWorkout(event) {
@@ -176,7 +176,7 @@ export default function NewWorkoutForm(props) {
         setExercise(exerciseInit)
         setDisplayState({ showPostedExercises: false })
         setNewWorkoutExercises([])
-        
+
     }
     // adds previously posted exercise to current new exercises for workout
     function addPostedExercises(event) {
@@ -186,12 +186,12 @@ export default function NewWorkoutForm(props) {
     }
     // updates state when checkboxs checked/unchecked
     function handlePostedExercisesChange(event) {
-        const {value, checked} = event.target
+        const { value, checked } = event.target
         if (checked) {
             const exerciseObj = props.props.find(each => each._id === value)
             setPostedExercises(prevState => [...prevState, exerciseObj])
-            setWorkoutInfo(prevState => ({...prevState, exercises: [...prevState.exercises, value]}))
-        } 
+            setWorkoutInfo(prevState => ({ ...prevState, exercises: [...prevState.exercises, value] }))
+        }
         else if (!checked) {
             setPostedExercises(prevState => prevState.filter(each => each._id !== value))
             setWorkoutInfo(prevState => ({
@@ -202,7 +202,7 @@ export default function NewWorkoutForm(props) {
     }
     // updates state for every change of workout
     function handleWorkoutChange(event) {
-        const {value, name} = event.target
+        const { value, name } = event.target
         setWorkoutInfo(prevState => ({
             ...prevState,
             [name]: value
@@ -218,14 +218,17 @@ export default function NewWorkoutForm(props) {
     }
 
     return (
-        <div  className='new-workout-form flex flex-col items-center w-full'>
-            <form className='text-zinc-300 w-11/12 form-control px-6 py-2 m-2 col-start-1 col-end-3 flex flex-row items-center justify-evenly gap-2 rounded-lg border-2 border-stone-500' onChange={handleWorkoutChange} onSubmit={addWorkout} name='newWorkout' id='new-workout'> 
+        <div className='new-workout-form flex flex-col items-center w-full'>
+            <form
+                className='text-zinc-300 w-11/12 form-control px-6 py-2 m-2 col-start-1 col-end-3 flex flex-row items-center justify-evenly gap-2 rounded-lg border-2 border-stone-500'
+                onChange={handleWorkoutChange} onSubmit={addWorkout} name='newWorkout' id='new-workout'
+                >
                 <label className='text-zinc-300'>Title:</label>
-                <input className='input input-bordered' name='title' type='text' value={workoutInfo.title} placeholder='i.e. leg day, chest/tri day'></input>
+                <input className='input input-bordered' name='title' type='text' value={workoutInfo.title} onChange={handleWorkoutChange} placeholder='i.e. leg day, chest/tri day'></input>
                 <label className=''>Date:</label>
-                <input className='input input-bordered' name='date' value={workoutInfo.date} type='date'></input>
+                <input className='input input-bordered' name='date' value={workoutInfo.date} onChange={handleWorkoutChange} type='date'></input>
                 <label className=''>Duration(min):</label>
-                <input className='input input-bordered w-20' name='duration' value ={workoutInfo.duration} type='number'></input>
+                <input className='input input-bordered w-20' name='duration' value={workoutInfo.duration} onChange={handleWorkoutChange} type='number'></input>
                 <ul className='text-zinc-300 flex flex-row items-center gap-2'>
                     <label name='warmUp'>warmup:</label>
                     <li className='cursor-pointer label'>
@@ -234,7 +237,7 @@ export default function NewWorkoutForm(props) {
                     </li>
                     <li className='cursor-pointer label'>
                         <input className='radio' type='radio' name='warmUp' id='false' value='false'></input>
-                        <label className='px-2' htmlFor='false'>Next time</label>   
+                        <label className='px-2' htmlFor='false'>Next time</label>
                     </li>
                 </ul>
             </form>
@@ -254,36 +257,36 @@ export default function NewWorkoutForm(props) {
                         </select>
                         <select className='select select-bordered select-primary w-full' onChange={handleExerciseChange}>
                             <option>select an exercise</option>
-                            {category.category.map(each => 
+                            {category.category.map(each =>
                                 <option value={each.uuid}>
                                     {each.name}
                                 </option>
                             )}
                         </select>
                         <label className='underline underline-offset-4 tracking-widest'>Sets:</label>
-                        <button className='btn btn-xs btn-primary' value='minus' onClick={handleSets}>Minus</button><p>{sets.length}</p><button className='btn btn-xs btn-primary' value='add' onClick={handleSets}>Plus</button> 
+                        <button className='btn btn-xs btn-primary' value='minus' onClick={handleSets}>Minus</button><p>{sets.length}</p><button className='btn btn-xs btn-primary' value='add' onClick={handleSets}>Plus</button>
                         <ul className='text-xl tracking-wider'>
-                            {sets.length === 0 ? '' : sets.map(each => 
-                                <li className='grid grid-cols-8 grid-rows-3 justify-items-center gap-1'>
+                            {sets.length === 0 ? '' : sets.map(each =>
+                                <li className='grid grid-cols-8 grid-rows-3 justify-items-center gap-1' key={sets._id}>
                                     <label className='col-start-1 col-end-9 row-start-1 row-end-2 self-center'>Set #{each.setNum}:</label>
                                     <label className='col-start-1 col-end-5 row-start-2 row-end-3'>Reps:</label>
-                                    <input className='col-start-1 col-end-5 row-start-3 row-end-4 input input-bordered' id={each.setNum} onChange={handleReps} type='number' value={sets[(each.setNum-1)].reps}></input>
+                                    <input className='col-start-1 col-end-5 row-start-3 row-end-4 input input-bordered' id={each.setNum} onChange={handleReps} type='number' value={sets[(each.setNum - 1)].reps}></input>
                                     <label className='col-start-5 col-end-9 row-start-2 row-end-3' >Weight(lbs.):</label>
-                                    <input className='col-start-5 col-end-9 row-start-3 row-end-4 input input-bordered'  type='number' onChange={handleWeight} id={each.setNum} value={sets[(each.setNum-1)].weight}></input>
+                                    <input className='col-start-5 col-end-9 row-start-3 row-end-4 input input-bordered' type='number' onChange={handleWeight} id={each.setNum} value={sets[(each.setNum - 1)].weight}></input>
                                 </li>
                             )}
                         </ul>
-                        <button style={{display: sets.length === 0 && 'none'}}>Add Exercise</button>
+                        <button style={{ display: sets.length === 0 && 'none' }}>Add Exercise</button>
                     </form>
                 </div>
-                <form className='bg-sky-700 w-10/12 flex flex-col items-center col-start-2 col-end-3 pb-2 mt-2 rounded-xl' style={{height: '230px'}} id='posted-exercises' name='postedExercises' onChange={handlePostedExercisesChange} onSubmit={addPostedExercises}>
+                <form className='bg-sky-700 w-10/12 flex flex-col items-center col-start-2 col-end-3 pb-2 mt-2 rounded-xl' style={{ height: '230px' }} id='posted-exercises' name='postedExercises' onChange={handlePostedExercisesChange} onSubmit={addPostedExercises}>
                     <button className={`btn btn-outline btn-sm m-2 ${!displayState.showPostedExercises && 'bg-cyan-500 text-slate-300'}`} onClick={togglePostedExercisesDisplay}>Add a previous exercise:</button>
-                    <ul className='w-11/12 form-control carousel rounded-box' style={{ display: !displayState.showPostedExercises && 'none'}}>
-                        {props.props.map(each => 
-                            <li className='dropdown dropdown-hover cursor-pointer label carousel-item border-1 border-black text-zinc-100 '>
+                    <ul className='w-11/12 form-control carousel rounded-box' style={{ display: !displayState.showPostedExercises && 'none' }}>
+                        {allUserExercises.objects.map(each =>
+                            <li key={each._id} className='dropdown dropdown-hover cursor-pointer label carousel-item border-1 border-black text-zinc-100 '>
                                 <label className='btn btn-sm'>sets: {each.sets.length}</label>
                                 <ul className='p-2 shadow menu dropdown-content bg-base-100 rounded-box'>
-                                    {each.sets.map(setEach => <label> reps: {setEach.reps}{setEach.weight === 0 ? '' : ` | weight: ${setEach.weight}`}</label>)}
+                                    {each.sets.map(setEach => <label key={`sets-${setEach._id}`}> reps: {setEach.reps}{setEach.weight === 0 ? '' : ` | weight: ${setEach.weight}`}</label>)}
                                 </ul>
                                 <label className='exercise-name'>{each.name}</label>
                                 <input className='checkbox' name='postedExercise' value={each._id} type='checkbox'></input>
@@ -293,16 +296,16 @@ export default function NewWorkoutForm(props) {
                     <button className='btn btn-xs' style={{ display: !displayState.showPostedExercises && 'none' }}>Add exercises</button>
                 </form>
                 <div className='col-start-3 col-end-4 row-start-1' id='added-exercises'>
-                <h4>Workout Exercises</h4>
-                    {newWorkoutExercises.map(each => 
+                    <h4>Workout Exercises</h4>
+                    {newWorkoutExercises.map(each =>
                         <div className='collapse collapse-arrow w-full border rounded-box border-base-300 ' id={each._id}>
                             <input type='checkbox'></input>
                             <span className='collapse-title' ><h3>{each.name}</h3><h5>Sets: {each.sets.length}</h5></span>
-                            <ul className='collapse-content text-white' style={{listStyle: 'none'}}>
-                                {each.sets.map(eachSet => <><li>reps: {eachSet.reps}</li><li style={{display: !eachSet.weight && 'none'}} >weight: {eachSet.weight}</li></>)}
+                            <ul className='collapse-content text-white' style={{ listStyle: 'none' }}>
+                                {each.sets.map(eachSet => <li key={`newW-${eachSet._id}`}><li>reps: {eachSet.reps}</li><li style={{ display: !eachSet.weight && 'none' }} >weight: {eachSet.weight}</li></li>)}
                                 <li>
                                     <button className=''>
-                                        <TrashIcon className='h-5 w-5 text-red-500'/>
+                                        <TrashIcon className='h-5 w-5 text-red-500' />
                                     </button>
                                 </li>
                             </ul>
