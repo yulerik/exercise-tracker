@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { FilterIcon } from '@heroicons/react/solid'
-
 
 export const ForumContext = React.createContext()
 
@@ -38,12 +36,48 @@ export default function ForumProvider(props) {
     const [forum, setForum] = useState(initForum)
     const [oneForum, setOneForum] = useState({comments: [], info: {}})
     const [allComments, setAllComments] = useState([])
+    const [allShared, setAllShared] = useState({allExercises: [], allShared: [], shared: []})
+    // get allShared workouts from db, replace WorkoutIds w/WorkoutObjs
+    const getShared = async () => {
+        try {
+            const sharedExercises = await userAxios.get('/api/workout/shared')
+            setAllShared(prevState => ({
+                ...prevState,
+                allShared: sharedExercises.data
+            }))
+            const allExercises = await userAxios.get('/api/exercise/forum')
+            setAllShared(prevState => ({
+                ...prevState,
+                allExercises: allExercises.data
+            }))
+            const shared = await userAxios.get('/api/forum/share')
+                setAllShared(prevState => ({
+                    ...prevState,
+                    shared: shared.data.map(workout => {
+                        const findExerciseObjs = workout.exercises.map(exerciseId => {
+                            return allExercises.data.find(exercise => exercise._id === exerciseId)
+                        })
+                        console.log(findExerciseObjs)
+                        const dateArray = workout.date.split('')
+                        workout.exercises = findExerciseObjs
+                        dateArray.splice(10)
+                        workout.date = dateArray.join('')
+                        return workout
+                    })
+                }))
+        }
+        catch(err) {
+            console.error(err)
+        }
+        
+    }
     // remove workout from shared db, update shared flag
     const unshareWorkout = async (workoutId, sharedId) => {
         try {
             userAxios.delete(`/api/workout/${workoutId}/${sharedId}`)
                 .then(res => {
                     getWorkouts()
+                    getShared()
                 })
         }
         catch(err) {
@@ -56,6 +90,7 @@ export default function ForumProvider(props) {
             userAxios.post('/api/workout/shared', {"sharedWorkout": workoutId})
                 .then(res => {
                     getWorkouts()
+                    getShared()
                 })
         }
         catch(err) {
@@ -141,6 +176,7 @@ export default function ForumProvider(props) {
 
         userAxios.post('/api/forum/', forum.questionInputs)
             .then(res => {
+                getAllForum()
                 setForum(prevState => ({
                     ...prevState,
                     questions: [...prevState.questions, res.data],
@@ -275,6 +311,7 @@ export default function ForumProvider(props) {
         <ForumContext.Provider
             value={{
                 ...forum,
+                getShared,
                 tokenState,
                 likeCommentQuestion,
                 getWorkouts,
@@ -291,6 +328,7 @@ export default function ForumProvider(props) {
                 unshareWorkout,
                 getForumCardInfo,
                 postForumCommentUpdated,
+                allShared,
                 oneForum
             }}
         >

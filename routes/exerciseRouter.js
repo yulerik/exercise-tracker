@@ -13,6 +13,16 @@ exerciseRouter.get('/', (req, res, next) => {
         return res.status(200).send(exercises)
     })
 })
+// get all workouts for shared, no user req
+exerciseRouter.get('/forum', (req, res, next) => {
+    Exercise.find((err, exercises) => {
+        if (err) {
+            res.status(500)
+            return next(err)
+        }
+        return res.status(200).send(exercises)
+    })
+})
 
 // post new workout
 exerciseRouter.post('/', (req, res, next) => {

@@ -22,6 +22,11 @@ export default function ProfileProvider(props) {
     const [userWorkouts, setUserWorkouts] = useState([])
     const [allUserExercises, setAllUserExercises] = useState(userExercisesInit)
 
+    const getWorkout = async (workoutId) => {
+        const workout = await userAxios.get(`/api/workout/${workoutId}`)
+        return workout.data
+    }
+
     function shareWorkout(workoutId) {
         userAxios.post('/api/workout/shared', {"sharedWorkout": workoutId})
             .then(res => {
@@ -44,10 +49,10 @@ export default function ProfileProvider(props) {
                 // takes all exercises ids into one array
                 res.data.map(each =>   allExercises.push(...each.exercises))
                 // 
-                setUserWorkouts(prevState => [...prevState, ...res.data])
+                setUserWorkouts(prevState => res.data)
                 setAllUserExercises(prevState => ({
                     ...prevState, 
-                    ids: [...prevState.ids, ...allExercises]
+                    ids: allExercises
                 }))
                 setUserWorkouts(prevState => prevState.map(each => {
                     const dateArray = each.date.split('')
@@ -106,7 +111,7 @@ export default function ProfileProvider(props) {
         userAxios.post('/api/workout', workoutObj)
             .then(res => {
                 // setUserWorkouts(prevState => [...prevState, res.data])
-                getUserWorkouts()
+                getWorkoutsExercises()
             })
             .catch(err => console.log(err))
     }
@@ -138,6 +143,7 @@ export default function ProfileProvider(props) {
     return (
         <ProfileContext.Provider 
             value={{
+                getWorkout,
                 getWorkoutsExercises,
                 getUserWorkouts,
                 setUserWorkouts,

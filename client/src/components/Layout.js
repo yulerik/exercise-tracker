@@ -12,7 +12,7 @@ export default function Layout() {
                 <Link className='btn btn-outline' to='/forum'>Forum</Link>
                 <Link to='/'  className='btn btn-ghost' onClick={logout}>Logout</Link>
             </nav>
-            <Outlet />
+            <Outlet key='outlet' />
         </>
     )
 }

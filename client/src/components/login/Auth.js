@@ -34,8 +34,15 @@ export default function Auth(){
   }
 
   return (
-    <div className='flex flex-col items-center h-full gap-8 pt-10'>
-      <h1 className='text-3xl tracking-wider underline underline-offset-8'>Exercise Tracker</h1>
+    <div className='flex flex-col w-12/12 justify-center items-center gap-8 pt-10 m-10'>
+      <div className='flex flex-col items-center gap-4'>
+        <h1 className='text-3xl tracking-wider underline underline-offset-8'>Exercise Tracker</h1>
+        <p className='text-center m-1 p-1 text'>Sign up or Log in<br></br>track/share your exercises<br></br>ask questions in the forum</p>
+        { !toggle ? 
+          <p className='btn btn-outline btn-success' onClick={toggleForm}>Already a member?</p> :
+          <p className='btn btn-outline btn-error' onClick={toggleForm}>Not a member?</p> 
+        }
+      </div>
       { !toggle ?
         <>
           <AuthForm 
@@ -45,9 +52,8 @@ export default function Auth(){
             btnText="Sign up"
             errMsg={errMsg}
           />
-          <p className='btn btn-outline btn-success' onClick={toggleForm}>Already a member?</p>
-        </>
-      :
+          {/* <p className='btn btn-outline btn-success' onClick={toggleForm}>Already a member?</p> */}
+        </> :
         <>
           <AuthForm 
             handleChange={handleChange}
@@ -56,7 +62,7 @@ export default function Auth(){
             btnText="Login"
             errMsg={errMsg}
           />
-          <p className='btn btn-outline btn-error' onClick={toggleForm}>Not a member?</p>
+          {/* <p className='btn btn-outline btn-error' onClick={toggleForm}>Not a member?</p> */}
         </>
       }
     </div>

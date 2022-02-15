@@ -2,6 +2,7 @@ const express = require('express')
 const forumRouter = express.Router()
 const Forum = require('../models/forum')
 const Comment = require('../models/questionComment')
+const Workout = require('../models/workout')
 
 // get all forum question
 forumRouter.get('/', (req, res, next) => {
@@ -14,6 +15,17 @@ forumRouter.get('/', (req, res, next) => {
         return res.status(200).send(forums)
     })
 })
+// get all shared workouts from workout db w/ shared flag
+forumRouter.get('/share', (req, res, next) => {
+    Workout.find({ 'shared.isShared': true }, (err, workouts) => {
+        if (err) {
+            res.status(500)
+            return next(err)
+        }
+        return res.status(200).send(workouts)
+    })
+})
+
 // get forum question by id
 forumRouter.get('/:forumId', (req, res, next) => {
     // req.body.user = req.user._id

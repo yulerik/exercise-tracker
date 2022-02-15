@@ -11,6 +11,7 @@ module.exports = {
     require('@tailwindcss/forms')({
       strategoy: 'class',
     }),
-    require('daisyui')
+    require('daisyui'),
+    require('@tailwindcss/typography')
   ]
 }

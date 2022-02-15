@@ -30,7 +30,7 @@ export default function ExerciseProvider(props){
         userAxios.post('/api/exercise', exerciseObj)
             .then(res => {
                 getAllExercises()
-                // setNewWorkoutExercises(prevState => [...prevState, res.data])
+                setNewWorkoutExercises(prevState => [...prevState, res.data])
             })
             .catch(err => console.log(err))
     }

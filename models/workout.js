@@ -25,6 +25,7 @@ const workoutSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    username: String,
     title: {
         type: String,
         required: true

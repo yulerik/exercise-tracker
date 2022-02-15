@@ -1,9 +1,10 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Link, Outlet } from 'react-router-dom'
-import { ProfileContext } from '../../context/profileProvider'
+import Calendar from './Calendar'
+
 
 export default function Workout(props) {
-    // const { userWorkouts } = useContext(ProfileContext)
+
     const { userWorkouts } = props
 
     const workoutLinks = userWorkouts.map(each => 

@@ -1,5 +1,4 @@
 const express = require('express')
-const workout = require('../models/workout')
 const workoutRouter = express.Router()
 const Workout = require('../models/workout')
 const Shared = require('../models/sharedWorkout')
@@ -26,6 +25,18 @@ workoutRouter.get('/shared', (req, res, next) => {
         return res.status(200).send(sharedWorkouts)
     })
 })
+// get specific workout
+workoutRouter.get('/:workoutId', (req, res, next) => {
+    req.body.user = req.user._id
+    Workout.find({ _id: req.params.workoutId }, (err, workout) => {
+        if (err) {
+            res.status(500)
+            return next(err)
+        }
+        return res.status(200).send(workout)
+    })
+})
+
 // share a workout
 workoutRouter.post('/shared', (req, res, next) => {
     req.body.user = req.user._id
@@ -88,6 +99,7 @@ workoutRouter.delete('/:workoutId/:sharedId', (req, res, next) => {
 // post a new workout
 workoutRouter.post('/', (req, res, next) => {
     req.body.user = req.user._id
+    req.body.username = req.user.username
     const newWorkout = new Workout (req.body)
     newWorkout.save((err, workout) => {
         if (err) {
@@ -108,4 +120,5 @@ workoutRouter.delete('/:workoutId', (req, res, next) => {
         return res.status(200).send(deletedWorkout)
     })
 })
+
 module.exports = workoutRouter
