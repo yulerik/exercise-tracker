@@ -1,15 +1,23 @@
-import { UserCircleIcon } from '@heroicons/react/solid'
+import { ThumbUpIcon, UserCircleIcon } from '@heroicons/react/solid'
 import React, { useContext, useEffect, useState } from 'react'
 import { useOutletContext, Link } from 'react-router-dom'
 
 export default function ForumShare(props) {
-    const { allShared : { shared } } = useOutletContext()
+    const { allShared : { shared, allShared }, likeSharedWorkout } = useOutletContext()
+
+    function handleLike(event) {
+        // event.preventDefault()
+        const { id } = event.target
+        console.log(id)
+    }
 
     return (
         <div className='forum-share grid grid-cols-4 gap-2 w-full'>
             <h1>All Shared Workouts</h1>
             <div className='col-start-1 col-end-5'>
-                {!shared ? 'add a workout to share' : shared.map(each => 
+                {!shared ? 'add a workout to share' : shared.map(each => {
+                    const sharedObj = allShared.find(sharedWorkout => sharedWorkout.sharedWorkout == each._id)
+                    return (
                     <div className='border flex flex-col p-1' key={each._id}>
                         <span className='flex flex-row justify-between items-center w-full'>
                             <h3>{each.date}</h3>
@@ -20,6 +28,10 @@ export default function ForumShare(props) {
                             </h3>
                             <h3>{each.duration} mins</h3>
                             <h5>{(each.warmUp) ? ' Warmed up' : ' no warm up'}</h5>
+                            <button id={sharedObj._id} onClick={() => likeSharedWorkout(sharedObj._id)} className='flex flex-row items-center gap-1 btn btn-xs'>
+                                <ThumbUpIcon className='h-4 w-4'/>
+                                {sharedObj.likeWorkout.length}
+                            </button>
                         </span>
                         <ul className='flex flex-row flex-wrap gap-5 p-1.5'>
                             {each.exercises.map(exercise => 
@@ -37,6 +49,7 @@ export default function ForumShare(props) {
                             )}
                         </ul>
                     </div>
+                )}
                 )}
             </div>
         </div>

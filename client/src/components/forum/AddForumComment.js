@@ -22,10 +22,8 @@ export default function AddForumComment(props) {
                 <button 
                     className='btn btn-sm btn-outline'
                     >
-                    <AnnotationIcon 
-                        className='h-4 w-4 m-1'
-                    />
-                        comment
+                    <AnnotationIcon className='h-4 w-4 m-1'/>
+                    comment
                 </button>
             </form>
         </div>

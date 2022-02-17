@@ -273,7 +273,7 @@ export default function NewWorkoutForm(props) {
             <div className='w-full grid grid-cols-2 gap-2 justify-items-center h-full'>
                 <div className='col-start-1 col-end-2 flex flex-col items-center w-full p-2'>
                     <form 
-                        className='bg-sky-700 w-10/12 flex flex-col items-center col-start-2 col-end-3 pb-2 mt-2 rounded-xl' 
+                        className='w-10/12 flex flex-col items-center col-start-2 col-end-3 pb-2 mt-2 rounded-xl' 
                         style={{ height: '230px' }} 
                         id='posted-exercises' 
                         name='postedExercises' 

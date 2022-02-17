@@ -6,7 +6,7 @@ import { ThumbUpIcon, SparklesIcon } from '@heroicons/react/solid'
 
 export default function ForumCard(props) {
     const location = useLocation()
-    const {oneForum, getForumCardInfo, postForumCommentUpdated, likeCommentQuestion, likeQuestion } = useOutletContext()
+    const {oneForum, getForumCardInfo, postForumCommentUpdated, likeCommentQuestion, likeQuestion, getShared } = useOutletContext()
     const {_id} = location.state
 
     const [comment, setComment] = useState({comment: ''})
@@ -32,7 +32,8 @@ export default function ForumCard(props) {
         // props.post(_id, comment)
         postForumCommentUpdated(_id, comment)
         setComment({comment: ''})
-    }    
+        getShared()
+    }   
     useEffect(() => {
         // getForumCardInfo(_id).then(res => setForumCard(res))
         getForumCardInfo(_id)
@@ -49,12 +50,12 @@ export default function ForumCard(props) {
                         <span 
                             className='bg-purple-100 text-purple-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-purple-200 dark:text-purple-900'
                             >
-                                {category}
+                            {category}
                         </span>
                         <span 
                             className='bg-pink-100 text-pink-800 text-xs font-semibold mr-2 px-2 rounded dark:bg-pink-200 dark:text-pink-900'
                             >
-                                {subcategory}
+                            {subcategory}
                         </span>
 
                     </span>
@@ -96,9 +97,6 @@ export default function ForumCard(props) {
                             onClick={() => {likeCommentQuestion(each.questionId, each._id)}} 
                             className='basis-2/12 flex flex-row justify-center items-center gap-2 text-teal-900 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 hover:text-teal-300 rounded-lg text-sm p-1'
                             >
-                            {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clipRule="evenodd" />
-                            </svg> */}
                             <SparklesIcon className='h-5 w-5'/>
                             <h3>agree</h3>
                         </button>

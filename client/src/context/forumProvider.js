@@ -37,6 +37,33 @@ export default function ForumProvider(props) {
     const [oneForum, setOneForum] = useState({comments: [], info: {}})
     const [allComments, setAllComments] = useState([])
     const [allShared, setAllShared] = useState({allExercises: [], allShared: [], shared: []})
+    // delete a comment on a question
+    const deleteComment = async(commentId) => {
+        try {
+            const commentDeleted = await userAxios.delete(`/api/comment/${commentId}`).then(getShared())
+        }
+        catch(err) {
+            console.error(err)
+        }
+    }
+    // delete a question 
+    const questionDelete = async(questionId) => {
+        try {
+            const questionDeleted = await userAxios.delete(`/api/forum/${questionId}`).then(getAllForum())
+        }
+        catch(err) {
+            console.error(err)
+        }
+    }
+    // like a shared workout
+    const likeSharedWorkout = async(sharedId) => {
+        try {
+            const sharedLike = await userAxios.put(`/api/workout/shared/${sharedId}`).then(res => getShared())
+        }
+        catch(err) {
+            console.error(err)
+        }
+    }
     // get allShared workouts from db, replace WorkoutIds w/WorkoutObjs
     const getShared = async () => {
         try {
@@ -57,7 +84,6 @@ export default function ForumProvider(props) {
                         const findExerciseObjs = workout.exercises.map(exerciseId => {
                             return allExercises.data.find(exercise => exercise._id === exerciseId)
                         })
-                        console.log(findExerciseObjs)
                         const dateArray = workout.date.split('')
                         workout.exercises = findExerciseObjs
                         dateArray.splice(10)
@@ -65,6 +91,11 @@ export default function ForumProvider(props) {
                         return workout
                     })
                 }))
+            const userComments = await userAxios.get('/api/forum/comments')
+            setForum(prevState => ({
+                ...prevState,
+                questionComments: userComments.data
+            }))
         }
         catch(err) {
             console.error(err)
@@ -139,22 +170,22 @@ export default function ForumProvider(props) {
         }
     }
 
-    function getAllComments(questionId) {
-        userAxios.get(`/api/forum/${questionId}/comments`)
-            .then(res => {
-                setForum(prevState => ({
-                    ...prevState,
-                    questions: prevState.questions.find(each => {
-                        if (each._id === questionId) {
-                            each.comments = res.data
-                            return
-                        }
-                        return
-                    })
-                }))
-            })
-            .catch(err => console.log(err))
-    }
+    // function getAllComments(questionId) {
+    //     userAxios.get(`/api/forum/${questionId}/comments`)
+    //         .then(res => {
+    //             setForum(prevState => ({
+    //                 ...prevState,
+    //                 questions: prevState.questions.find(each => {
+    //                     if (each._id === questionId) {
+    //                         each.comments = res.data
+    //                         return
+    //                     }
+    //                     return
+    //                 })
+    //             }))
+    //         })
+    //         .catch(err => console.log(err))
+    // }
     function getSpecificComment(forumId, commentId) {
         userAxios.get(`/api/forum/${forumId}/comments/${commentId}`)
             .then(res => {return res.data})
@@ -173,10 +204,8 @@ export default function ForumProvider(props) {
     }
     function handleQuestionSubmit(event) {
         event.preventDefault()
-
         userAxios.post('/api/forum/', forum.questionInputs)
             .then(res => {
-                getAllForum()
                 setForum(prevState => ({
                     ...prevState,
                     questions: [...prevState.questions, res.data],
@@ -186,6 +215,7 @@ export default function ForumProvider(props) {
                         subcategory: ''
                     }
                 }))
+                getAllForum()
 
             })
             .catch(err => console.log(err))
@@ -248,7 +278,6 @@ export default function ForumProvider(props) {
     function getAllForum() {
         userAxios.get('/api/forum/')
             .then(res => {
-
                 getAllComments()
                 setForum(prevState => ({
                     ...prevState,
@@ -311,6 +340,9 @@ export default function ForumProvider(props) {
         <ForumContext.Provider
             value={{
                 ...forum,
+                questionDelete,
+                deleteComment,
+                likeSharedWorkout,
                 getShared,
                 tokenState,
                 likeCommentQuestion,

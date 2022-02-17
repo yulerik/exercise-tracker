@@ -25,6 +25,17 @@ commentRouter.get('/:forumId', (req, res, next) => {
         return res.status(200).send(comments)
     })
 })
+// delete a comment
+commentRouter.delete('/:commentId', (req, res, next) => {
+    req.body.user = req.user._id
+    Comment.findOneAndDelete({ _id: req.params.commentId }, (err, deletedComment) => {
+        if (err) {
+            res.status(500)
+            return next(err)
+        }
+        return res.status(200).send(deletedComment)
+    })
+})
 
 
 module.exports = commentRouter

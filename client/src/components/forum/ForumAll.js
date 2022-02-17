@@ -44,27 +44,27 @@ export default function ForumAll(props) {
                         key={each._id} 
                         >
                         <span 
-                            className='flex flex-row items-center justify-start w-full gap-2'
+                            className='flex flex-row items-center justify-between w-full gap-2'
                             >
-                            <span 
-                                className='bg-purple-100 text-purple-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-purple-200 dark:text-purple-900'
-                                >
-                                {each.category}
+                            <span className='flex flex-row items-center gap-1'>
+                                <span 
+                                    className='bg-purple-100 text-purple-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-purple-200 dark:text-purple-900'
+                                    >
+                                    {each.category}
+                                </span>
+                                <span 
+                                    className='bg-pink-100 text-pink-800 text-xs font-semibold mr-2 px-2 rounded dark:bg-pink-200 dark:text-pink-900'
+                                    >
+                                    {each.subcategory}
+                                </span>
                             </span>
-                            <span 
-                                className='bg-pink-100 text-pink-800 text-xs font-semibold mr-2 px-2 rounded dark:bg-pink-200 dark:text-pink-900'
-                                >
-                                {each.subcategory}
-                            </span>
+                            <h4 className='flex flex-row items-center gap-1 text-sky-200'>
+                                <UserCircleIcon className='h-4 w-4 text-sky-400'/> 
+                                {each.username}
+                            </h4>
                         </span>
                         <h1>{each.question}</h1>
                         <div className='flex flex-row w-full justify-between items-center'>
-                            <span className='flex flex-row badge badge-info gap-2 py-4'>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                                <h3>{each.username}</h3>
-                            </span>
                             <div className='flex flex-row gap-1 w-full items-center justify-between m-1'>
                                 <span className='flex flex-row badge badge-outline text-emerald-600'>
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

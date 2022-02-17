@@ -23,6 +23,7 @@ export default function WorkoutCard(props) {
     }
     function deleteButton() {
         props.props(_id)
+        getShared()
         location.pathname='/profile/workouts'
     }
 

@@ -25,6 +25,40 @@ workoutRouter.get('/shared', (req, res, next) => {
         return res.status(200).send(sharedWorkouts)
     })
 })
+// like/unlike shared Workout
+workoutRouter.put('/shared/:sharedId', (req, res, next) => {
+    req.body.user = req.user._id
+    Shared.findById({ _id: req.params.sharedId }, (err, sharedWorkout) => {
+        if (err) {
+            res.status(500)
+            return next(err)
+        }
+        const findId = sharedWorkout.likeWorkout.filter(each => each == req.user._id)
+        console.log(findId)
+        if (findId.length) Shared.findByIdAndUpdate(
+            { _id: req.params.sharedId },
+            { $pull: { 'likeWorkout': req.user._id } },
+            (err, workoutShared) => {
+                if (err) {
+                    res.status(500)
+                    return next(err)
+                }
+                return res.status(200).send(workoutShared)
+            }
+        )
+        else Shared.findByIdAndUpdate(
+            { _id: req.params.sharedId },
+            { $addToSet: { 'likeWorkout': req.user._id } },
+            (err, workoutShared) => {
+                if (err) {
+                    res.status(500)
+                    return next(err)
+                }
+                return res.status(200).send(workoutShared)
+            }
+        )
+    })
+})
 // get specific workout
 workoutRouter.get('/:workoutId', (req, res, next) => {
     req.body.user = req.user._id

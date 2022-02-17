@@ -25,7 +25,17 @@ forumRouter.get('/share', (req, res, next) => {
         return res.status(200).send(workouts)
     })
 })
-
+// get all comments on questions by a user
+forumRouter.get('/comments', (req, res, next) => {
+    req.body.user = req.user._id
+    Comment.find({ user: req.user._id }, (err, comments) => {
+        if (err) {
+            res.status(500)
+            return next(err)
+        }
+        return res.status(200).send(comments)
+    })
+})
 // get forum question by id
 forumRouter.get('/:forumId', (req, res, next) => {
     // req.body.user = req.user._id
@@ -84,13 +94,6 @@ forumRouter.get('/:forumId/comments/', (req, res, next) => {
             res.status(500)
             return next(err)
         }
-        // comments.map(each => Forum.find({_id: each}, { new: true }, (err, comment) => {
-        //     if (err) {
-        //         res.status(500)
-        //         return next(err)
-        //     }
-        //     return comment
-        // }))
         return res.status(200).send(comments)
     })
 })
@@ -118,8 +121,6 @@ forumRouter.put(`/:forumId/comments/:commentId`, (req, res, next) => {
                 return next(err)
             }
             const findId = comment.agree.filter(each => each == req.user._id)
-            // console.log(findId)
-            // console.log(comment)
             if (!findId.length) Comment.findByIdAndUpdate(
                 { _id: req.params.commentId },
                 { $addToSet: { 'agree': req.user._id } }, 
@@ -180,6 +181,16 @@ forumRouter.put('/:forumId/like', (req, res, next) => {
             )
         }
     )
+})
+forumRouter.delete('/:questionId', (req, res, next) => {
+    req.body.user = req.user._id
+    Forum.findOneAndDelete({ _id: req.params.questionId }, (err, deletedComment) => {
+        if (err) {
+            res.status(500)
+            return next(err)
+        }
+        return res.status(200).send(deletedComment)
+    })
 })
 
 

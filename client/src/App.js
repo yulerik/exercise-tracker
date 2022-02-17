@@ -57,7 +57,7 @@ export default function App(){
             <Route path=':forumId' element={ token ? <ForumCard {...oneForum} post={postForumComment} like={likeQuestion} props={getQuestion} /> : <Navigate to='/' replace /> } />
             <Route path='share' element={ token ? <ForumShare /> : <Navigate to='/' replace /> } />
             <Route path='share/:shareId' element={ token ? <SharedWorkout /> : <Navigate to='/' replace /> } />
-            <Route path='public' element= { token ? <ForumAll {...allForumContext} {...allProfileContext} /> : <Navigate to='/' replace /> } />
+            <Route path='public' element={ token ? <ForumAll {...allForumContext} {...allProfileContext} /> : <Navigate to='/' replace /> } />
           </Route>
           <Route path='*' element={ token ? <WrongRoute /> : <Navigate to ='/' replace /> } />
         </Route>
