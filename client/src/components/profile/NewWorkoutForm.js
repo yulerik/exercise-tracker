@@ -175,6 +175,8 @@ export default function NewWorkoutForm(props) {
 
     function addWorkout(event) {
         event.preventDefault()
+        workoutInfo.exercises = newWorkoutExercises.map(each => each._id)
+        console.log(workoutInfo)
         postNewWorkout(workoutInfo)
         // clear all inputs and values to defaults
         setWorkoutInfo(workoutInit)
@@ -189,7 +191,6 @@ export default function NewWorkoutForm(props) {
     // adds previously posted exercise to current new exercises for workout
     function addPostedExercises(event) {
         event.preventDefault()
-        console.log(event)
         setNewWorkoutExercises(prevState => [...prevState, ...postedExercises])
         setPostedExercises([])
     }
@@ -198,16 +199,15 @@ export default function NewWorkoutForm(props) {
         const { value, checked } = event.target
         if (checked) {
             const exerciseObj = allUserExercises.objects.find(each => each._id === value)
-            console.log(exerciseObj)
             setPostedExercises(prevState => [...prevState, exerciseObj])
-            setWorkoutInfo(prevState => ({ ...prevState, exercises: [...prevState.exercises, value] }))
+            // setWorkoutInfo(prevState => ({ ...prevState, exercises: [...prevState.exercises, value] }))
         }
         else if (!checked) {
             setPostedExercises(prevState => prevState.filter(each => each._id !== value))
-            setWorkoutInfo(prevState => ({
-                ...prevState,
-                exercises: prevState.exercises.filter(each => each !== value)
-            }))
+            // setWorkoutInfo(prevState => ({
+            //     ...prevState,
+            //     exercises: prevState.exercises.filter(each => each !== value)
+            // }))
         }
         console.log(value, checked)
     }
@@ -233,13 +233,17 @@ export default function NewWorkoutForm(props) {
     const formLabel = 'absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'
 
     return (
-        <div className='new-workout-form flex flex-col items-center w-full'>
+        <div 
+            className='new-workout-form flex flex-col items-center w-full'
+            >
             <form
                 className='w-full m-2 flex flex-col'
-                onChange={handleWorkoutChange} onSubmit={addWorkout} name='newWorkout' id='new-workout'
-            >   
+                onChange={handleWorkoutChange} 
+                onSubmit={addWorkout} 
+                name='newWorkout' 
+                id='new-workout'
+                >   
                 <div className='w-full m-2 border-b flex justify-evenly gap-4'>
-
                     <span className={formSpan}>
                         <input className={formInput} name='title' type='text' value={workoutInfo.title} onChange={handleWorkoutChange} placeholder=' ' required ></input>
                         <label htmlFor='name' className={formLabel}>Title:</label>
@@ -316,36 +320,12 @@ export default function NewWorkoutForm(props) {
                             Add exercises
                         </button>
                     </form>
-                    {/* <form
-                        className='w-full flex flex-col items-center'
-                        id='posted-exercises'
-                        name='postedExercises'
-                        onChange={handlePostedExercisesChange}
-                        onSubmit={addPostedExercises}>
-                        <button
-                            className='btn btn-outline text-sky-400 hover:bg-sky-500 hover:text-slate-700 hover:border-sky-300 focus:ring-4 focus:ring-sky-700'
-                            onClick={togglePostedExercisesDisplay}
-                            >
-                            Add a previous exercise:
-                        </button>
-                        <select 
-                            className='bg-neutral m-2 p-2 rounded-xl w-11/12' 
-                            onChange={handlePostedExercisesChange}
-                            style={{ display: !displayState.showPostedExercises && 'none', overflowY: 'auto' }} 
-                            >
-                            {allUserExercises.objects.map(exerciseObj => 
-                                <option key={exerciseObj._id} value= className='h-16'>
-                                    {exerciseObj.name} | sets: {exerciseObj.sets.length}
-                                </option>
-                            )}
-                        </select>
-                        <button className='btn btn-xs' style={{ display: !displayState.showPostedExercises && 'none' }}>Add exercises</button>
-                    </form> */}
                     <div className='w-full text-center rounded-lg p-2 m-2' >
                         <button 
                             onClick={handleNewExerciseDisplay}
-                            className='text-purple-700 hover:text-slate-800 border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-purple-400 dark:text-purple-400  dark:hover:bg-purple-500 dark:focus:ring-purple-900'>
-                                Add a new exercise
+                            className='text-purple-700 hover:text-slate-800 border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-purple-400 dark:text-purple-400  dark:hover:bg-purple-500 dark:focus:ring-purple-900'
+                            >
+                            Add a new exercise
                         </button>
                         <form 
                             style={{display: !displayState.showNewExerciseForm && 'none'}} 
@@ -358,43 +338,87 @@ export default function NewWorkoutForm(props) {
                                 className='select select-bordered border-sky-600 w-full' 
                                 onChange={handleCategoryChange}
                                 >
-                                    <option value='' >choose category</option>
-                                    <option value='abs' >Abs</option>
-                                    <option value='arms' >Arms</option>
-                                    <option value='calves' >Calves</option>
-                                    <option value='chest' >Chest</option>
-                                    <option value='legs' >Legs</option>
-                                    <option value='shoulders' >Shoulders</option>
-                                </select>
-                            <select className='select select-bordered border-sky-600 w-full' onChange={handleExerciseChange}>
-                                <option>select an exercise</option>
-                                    {category.category.map(each =>
-                                        <option value={each.uuid}>
-                                            {each.name}
-                                        </option>
-                                    )}
+                                <option value='' >choose category</option>
+                                <option value='abs' >Abs</option>
+                                <option value='arms' >Arms</option>
+                                <option value='calves' >Calves</option>
+                                <option value='chest' >Chest</option>
+                                <option value='legs' >Legs</option>
+                                <option value='shoulders' >Shoulders</option>
                             </select>
-                            <label className='underline underline-offset-4 tracking-widest'>Sets:</label>
+                            <select 
+                                className='select select-bordered border-sky-600 w-full' 
+                                onChange={handleExerciseChange}
+                                >
+                                <option>select an exercise</option>
+                                {category.category.map(each =>
+                                <option value={each.uuid}>
+                                    {each.name}
+                                </option>
+                                )}
+                            </select>
+                            <label 
+                                className='underline underline-offset-4 tracking-widest'
+                                >
+                                Sets:
+                            </label>
                             <span className='flex flex-row w-10/12 justify-evenly items-center'>
-                                <button className='btn btn-xs btn-error' value='minus' onClick={handleSets}>Minus</button>
+                                <button 
+                                    className='btn btn-xs btn-error' 
+                                    value='minus' 
+                                    onClick={handleSets}
+                                    >
+                                    Minus
+                                </button>
                                 <p className='alert alert-info'>{sets.length}</p>
-                                <button className='btn btn-xs btn-success' value='add' onClick={handleSets}>Plus</button>
+                                <button 
+                                    className='btn btn-xs btn-success' 
+                                    value='add' 
+                                    onClick={handleSets}
+                                    >
+                                    Plus
+                                </button>
                             </span>
                             <ul className='text-xl tracking-wider w-full m-2'>
                                 {sets.length === 0 ? '' : sets.map(each => 
-                                        <li className='flex gap-2 w-11/12 justify-evenly' key={sets._id}>
-                                            <label className='badge'>Set #{each.setNum}:</label>
-                                            <span className={formSpan} >
-                                                <input className={formInput} id={each.setNum} name='rep' onChange={handleReps} type='number' value={sets[(each.setNum - 1)].reps}></input>
-                                                <label className={formLabel} htmlFor='rep'>Reps:</label>
-                                            </span>
-                                            <span className={formSpan} >
-                                                <input className={formInput} type='number' name='weight' onChange={handleWeight} id={each.setNum} value={sets[(each.setNum - 1)].weight} placholder=' ' ></input>
-                                                <label className={formLabel} htmlFor='weight'>Weight(lbs.):</label>
-                                            </span>
-                                        </li>
-                                    )
-                                }
+                                <li className='flex gap-2 w-11/12 justify-evenly' key={sets._id}>
+                                    <label className='badge'>Set #{each.setNum}:</label>
+                                    <span className={formSpan} >
+                                        <input 
+                                            className={formInput} 
+                                            id={each.setNum} 
+                                            name='rep' 
+                                            onChange={handleReps} 
+                                            type='number' 
+                                            value={sets[(each.setNum - 1)].reps}
+                                            >
+                                        </input>
+                                        <label 
+                                            className={formLabel} 
+                                            htmlFor='rep'
+                                            >
+                                            Reps:
+                                        </label>
+                                    </span>
+                                    <span className={formSpan} >
+                                        <input 
+                                            className={formInput} 
+                                            type='number' 
+                                            name='weight' 
+                                            onChange={handleWeight} 
+                                            id={each.setNum} 
+                                            value={sets[(each.setNum - 1)].weight} 
+                                            placholder=' ' 
+                                            >
+                                        </input>
+                                        <label 
+                                            className={formLabel} 
+                                            htmlFor='weight'
+                                            >
+                                            Weight(lbs.):
+                                        </label>
+                                    </span>
+                                </li>)}
                             </ul>
                             <button style={{ display: sets.length === 0 && 'none' }}>Add Exercise</button>
                         </form>

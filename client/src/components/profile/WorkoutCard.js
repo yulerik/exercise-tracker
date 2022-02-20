@@ -13,12 +13,14 @@ export default function WorkoutCard(props) {
         event.preventDefault()
         const { id } = event.target
         shareWorkout(id)
+        props.getWorkoutsExercises()
         setWorkoutShared(prevState => !prevState)
     }
     function handleUnshareClick(event) {
         event.preventDefault()
         const { id, value } = event.target
         unshareWorkout(id, value)
+        props.getWorkoutsExercises()
         setWorkoutShared(prevState => !prevState)
     }
     function deleteButton() {

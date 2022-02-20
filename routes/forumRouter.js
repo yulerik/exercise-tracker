@@ -3,6 +3,7 @@ const forumRouter = express.Router()
 const Forum = require('../models/forum')
 const Comment = require('../models/questionComment')
 const Workout = require('../models/workout')
+const Shared = require('../models/sharedWorkout')
 
 // get all forum question
 forumRouter.get('/', (req, res, next) => {
@@ -23,6 +24,17 @@ forumRouter.get('/share', (req, res, next) => {
             return next(err)
         }
         return res.status(200).send(workouts)
+    })
+})
+// get liked workouts
+forumRouter.get('/share/liked', (req, res, next) => {
+    req.body.user = req.user._id 
+    Shared.find({ 'likeWorkout': req.user._id }, (err, sharedWorkouts) => {
+        if (err) {
+            res.status(500)
+            return next(err)
+        }
+        return res.status(200).send(sharedWorkouts)
     })
 })
 // get all comments on questions by a user

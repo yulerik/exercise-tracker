@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { set } from 'mongoose'
 
 
 export const ProfileContext = React.createContext()
@@ -21,7 +22,32 @@ export default function ProfileProvider(props) {
     // const [mount, setMount] = useState({isMounted: false})
     const [userWorkouts, setUserWorkouts] = useState([])
     const [allUserExercises, setAllUserExercises] = useState(userExercisesInit)
+    const [sortUserWorkouts, setSortUserWorkouts] = useState([])
 
+    function handleUserWorkoutsSort(event) {
+        const { value } = event.target
+        if (value === 'most-exercises') {
+            console.log(value)
+            setSortUserWorkouts(prevState => userWorkouts.sort((a, b) => {return b.exercises.length - a.exercises.length}))
+        } else if (value === 'least-exercises') {
+            console.log(value)
+            setSortUserWorkouts(prevState => userWorkouts.sort((a, b) => {return a.exercises.length - b.exercises.length}))
+        } else if (value === 'shared') {
+            console.log(value)
+            setSortUserWorkouts(prevState => userWorkouts.filter(each => each.shared.isShared))
+        } else if (value === 'private') {
+            console.log(value)
+            setSortUserWorkouts(prevState => userWorkouts.filter(each => !each.shared.isShared))
+        } 
+        // else if (value === 'newest-date') {
+        //     console.log(value)
+        //     setSortUserWorkouts(prevState => userWorkouts.sort((a, b) => a.createdOn - b.createdOn))
+        // } else if (value === 'oldest-date') {
+        //     console.log(value)
+        //     setSortUserWorkouts(prevState => userWorkouts.sort((a, b) => b.createdOn - a.createdOn))
+        // }
+
+    }
     const getWorkout = async (workoutId) => {
         const workout = await userAxios.get(`/api/workout/${workoutId}`)
         return workout.data
@@ -83,29 +109,9 @@ export default function ProfileProvider(props) {
                 eachWorkout.date = dateArray.join('')
                 return eachWorkout
             })
-            console.log(getExercises)
             setUserWorkouts(res.data)
         })
     }
-     
-    // const getUserWorkouts = async () => {
-    //         const exercises =  userAxios.get('/api/exercise')
-    //             .then(res => {
-    //                 setAllUserExercises(prevState => ({
-    //                     ...prevState,
-    //                     objects: res.data,
-    //                     ids: res.data.map(each => each._id)
-    //                 }))
-    //         const workouts =  userAxios.get('/api/workout')
-    //             .then(res => {
-    //                 res.data.map(exercise => {
-    //                     return exercise.exercises.map(exerciseId => {
-    //                         return allUserExercises.objects.find(exerciseObj => exerciseObj._id === exerciseId)
-    //                     })
-    //                 })
-    //                 setUserWorkouts(prevState => res.data)
-    //             })
-    // }
 
     function postNewWorkout(workoutObj) {
         userAxios.post('/api/workout', workoutObj)
@@ -123,15 +129,6 @@ export default function ProfileProvider(props) {
                     objects: res.data,
                     ids: res.data.map(each => each._id)
                 }))
-                // setAllUserExercises(prevState => ({
-                //     ...prevState,
-                //     objects: prevState.ids.map(each => res.data.find(exerciseObj => exerciseObj._id === each))
-                // }))
-                // setUserWorkouts(prevState => prevState.map(each => {
-                //     const exerciseObjs = each.exercises.map(exerciseId => res.data.find(exerciseObj => exerciseObj._id === exerciseId))
-                //     each.exercises = exerciseObjs
-                //     return each
-                //     }))
             })
             .catch(err => console.log(err))
     }
@@ -143,6 +140,8 @@ export default function ProfileProvider(props) {
     return (
         <ProfileContext.Provider 
             value={{
+                sortUserWorkouts,
+                handleUserWorkoutsSort,
                 getWorkout,
                 getWorkoutsExercises,
                 getUserWorkouts,

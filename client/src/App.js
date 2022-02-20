@@ -23,7 +23,7 @@ export default function App(){
   const { token } = useContext(UserContext)
   const { userExercises, getAllCategories } = useContext(ExerciseContext)
   const { deleteWorkout, getWorkoutsExercises, getWorkout } = useContext(ProfileContext)
-  const { getQuestion, oneForum, likeQuestion, postForumComment, getShared } = useContext(ForumContext)
+  const { getQuestion, oneForum, likeQuestion, postForumComment, getShared, renderForumProvider } = useContext(ForumContext)
   
   const allForumContext = useContext(ForumContext)
   const allProfileContext = useContext(ProfileContext)
@@ -36,21 +36,21 @@ export default function App(){
         getWorkoutsExercises()
         getShared()
         console.log('render app')
-        return () => { isMounted = false }
+        return () => isMounted = false 
       } 
     }
-  }, [token])
+  }, [])
   
   return (
     <>
       <Routes>
         <Route path='/' element={<Layout />} >
           <Route index element={ token ? <Navigate to='/profile' /> : <Auth /> } />
-          <Route path='profile' element={ token ? <Profile /> : <Navigate to='/' replace /> } >
+          <Route path='profile' element={ token ? <Profile renderForumProvider={renderForumProvider} /> : <Navigate to='/' replace /> } >
             <Route index element={ token ? <ProfileHome /> : <Navigate to='/' replace /> } />
             <Route path='user' element={ token ? <ProfileUser props={userExercises} /> : <Navigate to='/' replace /> } />
             <Route path='workouts' element= { token ? <Workout {...allProfileContext} /> : <Navigate to='/' replace /> } />
-            <Route path='workouts/:workoutId' element= { token ? <WorkoutCard props={deleteWorkout} getWorkout={getWorkout} /> : <Navigate to='/' replace /> } />
+            <Route path='workouts/:workoutId' element= { token ? <WorkoutCard props={deleteWorkout} getWorkout={getWorkout} getWorkoutsExercises={getWorkoutsExercises} /> : <Navigate to='/' replace /> } />
           </Route>
           <Route path='forum' element={ token ? <Forum {...allForumContext} /> : <Navigate to='/' replace /> }>
             <Route index element={ token ? <ForumHome /> : <Navigate to='/' replace /> } /> 

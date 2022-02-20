@@ -8,7 +8,8 @@ export default function Profile(props){
   const { 
     user: { 
       username 
-    }
+    },
+    token
   } = useContext(UserContext)
   const {  
     userExercises 
@@ -19,6 +20,16 @@ export default function Profile(props){
     allUserExercises 
   } = useContext(ProfileContext)
 
+  useEffect(() => {
+    let isMounted = true
+    if (isMounted) {
+      if (token) {
+        props.renderForumProvider()
+        return () => { isMounted = false }
+      } 
+    }
+  }, [token])
+  
   return (
     <div className="profile pt-16 w-full flex flex-col items-center h-full" >
       <nav id='nav-profile' className='bg-sky-300 w-5/12 rounded-full p-2 flex flex-row justify-around'>

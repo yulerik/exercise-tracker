@@ -25,7 +25,6 @@ export default function ForumCard(props) {
         const { value, id } = event.target
         console.log(value, id)
         // likeCommentQuestion(value, id)
-
     }
     function handleCommentSubmit(event) {
         event.preventDefault()

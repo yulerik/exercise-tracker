@@ -14,6 +14,17 @@ workoutRouter.get('/', (req, res, next) => {
         return res.status(200).send(workouts)
     })
 })
+// get all liked workouts
+workoutRouter.get('/liked', (req, res, next) => {
+    req.body.user = req.user._id
+    Shared.find( { 'likeWorkout': req.user._id }, (err, likedWorkouts) => {
+        if (err) {
+            res.status(500)
+            return next(err)
+        }
+        return res.status(200).send(likedWorkouts)
+    })
+})
 // get all shared workouts
 workoutRouter.get('/shared', (req, res, next) => {
     req.body.user = req.user._id
@@ -109,11 +120,6 @@ workoutRouter.post('/shared', (req, res, next) => {
 // delete workout from shared list
 workoutRouter.delete('/:workoutId/:sharedId', (req, res, next) => {
     req.body.user = req.user._id
-    Shared.findOneAndDelete({ _id: req.params.sharedId }, (err, deletedShared) => {
-        if (err) {
-            res.status(500)
-            return next(err)
-        }
         Workout.findOneAndUpdate(
             {_id: req.params.workoutId}, 
             {
@@ -125,10 +131,15 @@ workoutRouter.delete('/:workoutId/:sharedId', (req, res, next) => {
                     res.status(500)
                     return next(err)
                 }
-                return res.status(200).send(deletedShared)
+                Shared.findOneAndRemove({ _id: req.params.sharedId }, (err, deletedShared) => {
+                    if (err) {
+                        res.status(500)
+                        return next(err)
+                    }
+                    return res.status(200).send(deletedShared)
+                })
             }
         )
-    })
 })
 // post a new workout
 workoutRouter.post('/', (req, res, next) => {
@@ -154,5 +165,6 @@ workoutRouter.delete('/:workoutId', (req, res, next) => {
         return res.status(200).send(deletedWorkout)
     })
 })
+
 
 module.exports = workoutRouter

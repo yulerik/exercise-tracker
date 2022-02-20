@@ -1,6 +1,7 @@
 const express = require('express')
 const commentRouter = express.Router()
 const Comment = require('../models/questionComment')
+const Forum = require('../models/forum')
 
 
 // get all comments
@@ -33,7 +34,18 @@ commentRouter.delete('/:commentId', (req, res, next) => {
             res.status(500)
             return next(err)
         }
-        return res.status(200).send(deletedComment)
+        Forum.findOneAndUpdate(
+            { _id: deletedComment.questionId },
+            { $pull: { 'comments': req.params.commentId } },
+            { new: true },
+            (err, updatedForum) => {
+                if (err) {
+                    res.status(500)
+                    return next(err)
+                }
+                return res.status(200).send(deletedComment)
+            }
+        )
     })
 })
 
