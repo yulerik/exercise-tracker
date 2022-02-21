@@ -11,8 +11,7 @@ export default function ForumAll(props) {
     const [postedQuestions, setPostedQuestions] = useState([])
 
     function handleFilter(event) {
-        const { value, name, checked } = event.target
-        
+        const { value, name, checked } = event.target  
         if (value == 'most-commented') {
             setForum(prevState => ({
                 ...prevState,

@@ -60,7 +60,7 @@ export default function WorkoutCard(props) {
                             {each.name}
                         </h3>
                         <span className='flex flex-row w-7/12 justify-evenly items-center'>
-                            <span className='badge badge-outline text-l p-4'>
+                            <span className='border rounded border-violet-600 text-violet-300 bg-violet-900 text-l py-.5 px-1.5'>
                                 {each.category.title}
                             </span>
                             <h5 className='badge badge-outline'>

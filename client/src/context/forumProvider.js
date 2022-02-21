@@ -39,9 +39,37 @@ export default function ForumProvider(props) {
     const [forum, setForum] = useState(initForum)
     const [oneForum, setOneForum] = useState({comments: [], info: {}})
     const [allComments, setAllComments] = useState([])
-    const [allShared, setAllShared] = useState({allExercises: [], allShared: [], shared: []})
+    const [allShared, setAllShared] = useState({allExercises: [], allShared: [], shared: [], filter: []})
     const [liked, setLiked] = useState([])
     const [workoutsLiked, setWorkoutsLiked] = useState([])
+    
+    function handleLikedWorkoutsFilter(event) {
+        const { value } = event.target
+        console.log(value)
+        if (value === 'all') {
+            setAllShared(prevState => ({
+                ...prevState,
+                filter: prevState.allShared.filter(each => {
+                    each.sharedObj = prevState.shared.find(sharedObj => sharedObj._id == each.sharedWorkout)
+                    return each
+                })
+            }))
+        } else if (value === 'liked') {
+            setAllShared(prevState => ({
+                ...prevState,
+                filter: prevState.allShared.filter(each => {
+                    const findLiked = each.likeWorkout.find(id => id == tokenState.user._id)
+                    if (findLiked === undefined) {
+                        return
+                    }
+                    const sharedObj = prevState.shared.find(sharedObj => sharedObj._id == each.sharedWorkout)
+                    console.log(sharedObj)
+                    each.sharedObj = sharedObj
+                    return each
+                })
+            }))
+        }
+    }
     // delete a comment on a question
     const deleteComment = async(commentId) => {
         try {
@@ -347,6 +375,7 @@ export default function ForumProvider(props) {
         <ForumContext.Provider
             value={{
                 ...forum,
+                handleLikedWorkoutsFilter,
                 setForum,
                 renderForumProvider,
                 questionDelete,

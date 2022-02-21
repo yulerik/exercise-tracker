@@ -13,8 +13,8 @@ export default function Workout(props) {
     
     return (
         <div key='outlet' className='all-workouts flex flex-col items-center gap-3 w-full'>
-            <div className='h-64 flex flex-row w-full'>
-                <form onChange={handleUserWorkoutsSort} className='flex flex-col w-34 items-start text-sm gap-1 border-r'>
+            <div className='h-64 flex flex-col gap-1 w-full'>
+                <form onChange={handleUserWorkoutsSort} className='flex flex-row w-full items-center text-sm gap-1 border-b-2'>
                     <span>
                         <label>sort by: </label>
                     </span>
