@@ -25,7 +25,7 @@ export default function ExerciseProvider(props){
 
     const [allExercises, setAllExercises] = useState(initExercises)
     const [newWorkoutExercises, setNewWorkoutExercises] = useState([])
-
+    // add new exercise to db
     function postNewExercise(exerciseObj) {
         userAxios.post('/api/exercise', exerciseObj)
             .then(res => {
@@ -34,7 +34,7 @@ export default function ExerciseProvider(props){
             })
             .catch(err => console.log(err))
     }
-
+    // get all exercises posted by user
     function getAllExercises() {
         userAxios.get('/api/exercise')
             .then(res => {
@@ -45,6 +45,7 @@ export default function ExerciseProvider(props){
             })
             .catch(err => console.log(err))
     }
+    // get all exercises from api
     const getAllCategories = async () => {
         try {
             await axios.get('https://wger.de/api/v2/exercise/?category=8&limit=76')

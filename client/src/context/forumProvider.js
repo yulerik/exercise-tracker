@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 
 export const ForumContext = React.createContext()
@@ -41,8 +41,7 @@ export default function ForumProvider(props) {
     const [allComments, setAllComments] = useState([])
     const [allShared, setAllShared] = useState({allExercises: [], allShared: [], shared: [], filter: []})
     const [liked, setLiked] = useState([])
-    const [workoutsLiked, setWorkoutsLiked] = useState([])
-    
+    // filters workout by all shared or user liked
     function handleLikedWorkoutsFilter(event) {
         const { value } = event.target
         console.log(value)
@@ -170,10 +169,10 @@ export default function ForumProvider(props) {
             console.error(err)
         }
     }
-
+    // get all workouts from db for user
     const getWorkouts = async () => {
         try {
-            console.log('getting workouts')
+            // console.log('getting workouts')
             const exercise = await userAxios.get('/api/exercise')
             setForum(prevState => ({
                 ...prevState,
@@ -201,7 +200,7 @@ export default function ForumProvider(props) {
             console.error(err)
         }
     }
-
+    // get all forum questions
     const getForumQuestions = async () => {
         try {
             await userAxios.get('/api/forum')
@@ -211,12 +210,13 @@ export default function ForumProvider(props) {
             console.error(err)
         }
     }
+    // get a specific comment
     function getSpecificComment(forumId, commentId) {
         userAxios.get(`/api/forum/${forumId}/comments/${commentId}`)
             .then(res => {return res.data})
             .catch(err => console.log(err))
     }
-
+    // updates state for input change for a question
     function handleQuestionChange(event) {
         const {name, value} = event.target
         setForum(prevState => ({
@@ -227,6 +227,7 @@ export default function ForumProvider(props) {
             }
         }))
     }
+    // post sumbit for new question to db, update state, get call after successfull post
     function handleQuestionSubmit(event) {
         event.preventDefault()
         userAxios.post('/api/forum/', forum.questionInputs)
@@ -245,6 +246,7 @@ export default function ForumProvider(props) {
             })
             .catch(err => console.log(err))
     }
+    // get call for forum question and comments posted on question
     const getForumCardInfo = async (forumId) => {
         try {
             let forumObj = {
@@ -273,6 +275,7 @@ export default function ForumProvider(props) {
             console.error(err)
         }
     }
+    // get a question
     function getQuestion(forumId) {
         userAxios.get(`/api/forum/${forumId}`)
             .then(res =>  {
@@ -281,6 +284,7 @@ export default function ForumProvider(props) {
             })
             .catch(err => console.log(err))
     }
+    // get comments for a question
     function getQuestionComments(forumId) {
         userAxios.get(`/api/comment/${forumId}`)
             .then(res => {
@@ -291,10 +295,11 @@ export default function ForumProvider(props) {
             })
             .catch(err => console.log(err))
     }
+    // get all comments
     function getAllComments() {
         userAxios.get('/api/comment')
             .then(res => {
-                console.log('sorting comments')
+                // console.log('sorting comments')
                 setAllComments(prevState => res.data)
                 setForum(prevState => ({
                     ...prevState,
@@ -310,8 +315,9 @@ export default function ForumProvider(props) {
             })
             .catch(err => console.log(err))
     }
+    // get everything for forum, comments, questions, and user questions
     function getAllForum() {
-        console.log('forum render all forum')
+        // console.log('forum render all forum')
         userAxios.get('/api/forum/')
             .then(res => {
                 getAllComments()
@@ -327,17 +333,7 @@ export default function ForumProvider(props) {
             })
             .catch(err => console.log(err))
     }
-    function postForumComment(forumId, commentObj) {
-        userAxios.post(`/api/forum/${forumId}`, commentObj)
-            .then(res => {
-                getAllForum()
-                setOneForum(prevState => ({
-                    ...prevState,
-                    comments: [...prevState.comments, res.data]
-                }))
-            })
-            .catch(err => console.log(err))
-    }
+    // updated post comment on a question
     const postForumCommentUpdated = async (forumId, commentObj) =>  {
         try {
             const comment = await userAxios.post(`/api/forum/${forumId}`, commentObj).then(res => {
@@ -365,6 +361,7 @@ export default function ForumProvider(props) {
             .then(res => { getAllForum(); getForumCardInfo(forumId);  })
             .catch(err => console.log(err))
     }
+    // get calls upon login and updates
     function renderForumProvider() {
         getAllForum()
         getWorkouts()
@@ -390,7 +387,6 @@ export default function ForumProvider(props) {
                 getAllForum,
                 getQuestion,
                 likeQuestion,
-                postForumComment,
                 getSpecificComment,
                 getAllComments,
                 getForumQuestions,

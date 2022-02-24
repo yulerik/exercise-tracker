@@ -19,11 +19,10 @@ export default function ProfileProvider(props) {
         objects: []
     }
 
-    // const [mount, setMount] = useState({isMounted: false})
     const [userWorkouts, setUserWorkouts] = useState([])
     const [allUserExercises, setAllUserExercises] = useState(userExercisesInit)
     const [sortUserWorkouts, setSortUserWorkouts] = useState([])
-
+    // sort user workouts
     function handleUserWorkoutsSort(event) {
         const { value } = event.target
         if (value === 'most-exercises') {
@@ -39,20 +38,13 @@ export default function ProfileProvider(props) {
             console.log(value)
             setSortUserWorkouts(prevState => userWorkouts.filter(each => !each.shared.isShared))
         } 
-        // else if (value === 'newest-date') {
-        //     console.log(value)
-        //     setSortUserWorkouts(prevState => userWorkouts.sort((a, b) => a.createdOn - b.createdOn))
-        // } else if (value === 'oldest-date') {
-        //     console.log(value)
-        //     setSortUserWorkouts(prevState => userWorkouts.sort((a, b) => b.createdOn - a.createdOn))
-        // }
-
     }
+    // get a specific workout
     const getWorkout = async (workoutId) => {
         const workout = await userAxios.get(`/api/workout/${workoutId}`)
         return workout.data
     }
-
+    // share a workout
     function shareWorkout(workoutId) {
         userAxios.post('/api/workout/shared', {"sharedWorkout": workoutId})
             .then(res => {
@@ -61,12 +53,13 @@ export default function ProfileProvider(props) {
             })
             .catch((err) => console.log(err))
     }
-    
+    // delete a workout
     function deleteWorkout(workoutId) {
         userAxios.delete(`/api/workout/${workoutId}`)
             .then(res => setUserWorkouts(prevState => prevState.filter(each => each._id !== res.data._id)))
             .catch(err => console.log(err))
     }
+    // get all user workouts
     function getUserWorkouts() {
         userAxios.get('/api/workout/')
             .then(res => {
@@ -89,6 +82,7 @@ export default function ProfileProvider(props) {
             })
             .catch(err => console.log(err))
     }
+    // get both workouts and exercises
     const getWorkoutsExercises = async () => {
         const getExercises = await userAxios.get('/api/exercise').then(res => {
             setAllUserExercises(prevState => ({
@@ -112,7 +106,7 @@ export default function ProfileProvider(props) {
             setUserWorkouts(res.data)
         })
     }
-
+    // post a new workout
     function postNewWorkout(workoutObj) {
         userAxios.post('/api/workout', workoutObj)
             .then(res => {
@@ -121,6 +115,7 @@ export default function ProfileProvider(props) {
             })
             .catch(err => console.log(err))
     }
+    // get user exercises
     function getAllUserExercises() {
         userAxios.get('/api/exercise')
             .then(res => {
@@ -135,7 +130,6 @@ export default function ProfileProvider(props) {
     function findSpecificWorkoutObj(workoutId) {
         return userWorkouts.find(workout => workout._id === workoutId)
     }
-    
     
     return (
         <ProfileContext.Provider 

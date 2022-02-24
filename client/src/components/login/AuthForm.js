@@ -37,7 +37,7 @@ export default function AuthForm(props){
       <span className={formSpan}>
         <input 
           className={formInput}
-          type="text" 
+          type="password" 
           value={password} 
           name="password" 
           onChange={handleChange} 
