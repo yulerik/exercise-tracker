@@ -6,9 +6,11 @@ const mongoose = require('mongoose')
 const expressJwt = require('express-jwt')
 const port = process.env.PORT || 9000
 const uri = process.env.MONGODB_URI
+const path = require('path')
 
 app.use(express.json())
 app.use(morgan('dev'))
+app.use(express.static(path.join(__dirname, 'client', 'build')))
 
 mongoose.connect(
   uri,
@@ -35,6 +37,10 @@ app.use((err, req, res, next) => {
     res.status(err.status)
   }
   return res.send({errMsg: err.message})
+})
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
 })
 
 app.listen(port, () => {
