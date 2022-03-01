@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
 export const ForumContext = React.createContext()
@@ -367,6 +367,13 @@ export default function ForumProvider(props) {
         getWorkouts()
         console.log('forum context reneder')
     }
+
+    useEffect(() => {
+        if(tokenState.token) {
+            renderForumProvider()
+            console.log('forum context rendering')
+        }
+    }, [])
 
     return (
         <ForumContext.Provider

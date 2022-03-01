@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext, useLayoutEffect } from 'react'
 import AddForumComment from './AddForumComment'
 import { useLocation, useOutletContext, useParams } from 'react-router-dom'
 import { ThumbUpIcon, SparklesIcon } from '@heroicons/react/solid'
+import { UserCircleIcon } from '@heroicons/react/outline'
 
 
 export default function ForumCard(props) {
@@ -84,12 +85,20 @@ export default function ForumCard(props) {
             <div className='w-full flex flex-col items-center'>
                 { !props.info._id  ? 'loading' : props.comments.map(each => 
                     <div 
-                        className='flex flex-row justify-between m-1.5 p-4 gap-2 w-8/12 badge badge-outline h-full flex-wrap border-stone-400 border-1.5' key={each._id}>
+                        className='flex flex-row justify-between m-1.5 p-4 gap-2 w-8/12 badge badge-outline h-full flex-wrap border-stone-400 border-1.5' 
+                        key={each._id}
+                        >
                         <span className='basis-2/12 flex flex-row gap-1'>
                             <SparklesIcon className='h-5 w-5 text-yellow-300' />
                             <h5>{each.agree.length}</h5>
                         </span>
-                        <h2 className='basis-6/12'>{each.comment}</h2>
+                        <span className='basis-6/12 flex flex-col'>
+                            <p>{each.comment}</p>
+                            <span className='flex flex-row gap-1 items-center self-end mt-1.5 badge badge-info'>
+                                <UserCircleIcon className='h-4 w-4' />
+                                {each.username}
+                            </span>
+                        </span>
                         <button
                             id={each._id} 
                             value={each.questionId} 

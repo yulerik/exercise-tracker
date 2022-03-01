@@ -35,6 +35,7 @@ export default function App(){
         getAllCategories()
         getWorkoutsExercises()
         getShared()
+        renderForumProvider()
         console.log('render app')
         return () => isMounted = false 
       } 
@@ -46,7 +47,7 @@ export default function App(){
       <Routes>
         <Route path='/' element={<Layout />} >
           <Route index element={ token ? <Navigate to='/profile' /> : <Auth /> } />
-          <Route path='profile' element={ token ? <Profile renderForumProvider={renderForumProvider} /> : <Navigate to='/' replace /> } >
+          <Route path='profile' element={ token ? <Profile getAllCategories={getAllCategories} getWorkoutsExercises={getWorkoutsExercises} getShared={getShared} renderForumProvider={renderForumProvider} /> : <Navigate to='/' replace /> } >
             <Route index element={ token ? <ProfileHome /> : <Navigate to='/' replace /> } />
             <Route path='user' element={ token ? <ProfileUser props={userExercises} /> : <Navigate to='/' replace /> } />
             <Route path='workouts' element= { token ? <Workout {...allProfileContext} /> : <Navigate to='/' replace /> } />

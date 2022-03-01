@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useOutletContext, Link } from 'react-router-dom'
 import { AnnotationIcon, SparklesIcon, ThumbUpIcon, UserIcon } from '@heroicons/react/solid'
 import { TrashIcon } from '@heroicons/react/outline'
+import { ForumContext } from '../../context/forumProvider'
 
 export default function ForumHome(props) {
-    const { tokenState, userQuestions, allWorkouts, questionComments, questions, questionDelete, deleteComment, userComments, agreedComments } = useOutletContext()
+    const { tokenState, userQuestions, allWorkouts, questionComments, questions, questionDelete, deleteComment, userComments, agreedComments } = useContext(ForumContext)
 
     const flexRowCenter = 'flex flex-row gap-1 items-center'
+
+    useEffect(() => {
+
+    }, [])
     
     return (
         <div className='w-full flex flex-col items-center'>
-            <h1>Forum Home</h1>
+            <h1>Forum Home</h1> 
             <div className='w-full flex flex-row'>
                 <div className='w-1/2'>
                     <h3 
