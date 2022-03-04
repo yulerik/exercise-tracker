@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { ForumContext } from '../../context/forumProvider'
 
 export default function WorkoutCard(props) {
     const location = useLocation()
     const {_id, date, duration, warmUp, exercises, shared: { isShared, sharedId }} = location.state
-    const { sharedWorkouts, shareWorkout, unshareWorkout, getShared } = useContext(ForumContext)
+    const { shareWorkout, unshareWorkout, getShared } = useContext(ForumContext)
 
     const [workoutShared, setWorkoutShared] = useState(isShared)
 
@@ -28,15 +28,6 @@ export default function WorkoutCard(props) {
         getShared()
         location.pathname='/profile/workouts'
     }
-
-    useEffect(() => {
-        let isMounted = true
-        if (isMounted) {
-            
-            return () => { isMounted = false}
-        }
-        // console.log(props.getWorkout(_id))
-    },[])
 
     return (
         <>  

@@ -47,6 +47,7 @@ export default function UserProvider(props){
           user,
           token
         }))
+        window.location.reload()
       })
       .catch(err => handleAuthErr(err.response.data.errMsg))
   }

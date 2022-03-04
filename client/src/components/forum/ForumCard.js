@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useContext, useLayoutEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import AddForumComment from './AddForumComment'
-import { useLocation, useOutletContext, useParams } from 'react-router-dom'
-import { ThumbUpIcon, SparklesIcon } from '@heroicons/react/solid'
+import { useLocation, useOutletContext } from 'react-router-dom'
+import { SparklesIcon } from '@heroicons/react/solid'
 import { UserCircleIcon } from '@heroicons/react/outline'
 
 
 export default function ForumCard(props) {
     const location = useLocation()
-    const {oneForum, getForumCardInfo, postForumCommentUpdated, likeCommentQuestion, likeQuestion, getShared } = useOutletContext()
+    const { getForumCardInfo, postForumCommentUpdated, likeCommentQuestion, likeQuestion, getShared } = useOutletContext()
     const {_id} = location.state
 
     const [comment, setComment] = useState({comment: ''})
@@ -19,25 +19,17 @@ export default function ForumCard(props) {
             [name]: value
         }))
     }
-    function handleLike(event) {
+    function handleLike() {
         likeQuestion(_id)
-    }
-    function handleAgree(event) {
-        const { value, id } = event.target
-        console.log(value, id)
-        // likeCommentQuestion(value, id)
     }
     function handleCommentSubmit(event) {
         event.preventDefault()
-        // props.post(_id, comment)
         postForumCommentUpdated(_id, comment)
         setComment({comment: ''})
         getShared()
     }   
     useEffect(() => {
-        // getForumCardInfo(_id).then(res => setForumCard(res))
         getForumCardInfo(_id)
-        console.log('forum card render')
     },[])
 
     const { category, subcategory, likes, question, user, username } = props.info

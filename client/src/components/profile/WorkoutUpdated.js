@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import React, { useContext, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { ProfileContext } from '../../context/profileProvider'
 
-export default function Workout(props) {
-    const { handleUserWorkoutsSort, userWorkouts, handleUserWorkoutSort, sortUserWorkouts, setSortUserWorkouts, getWorkoutsExercises } = useContext(ProfileContext)
+export default function Workout() {
+    const { handleUserWorkoutsSort, userWorkouts, sortUserWorkouts, getWorkoutsExercises } = useContext(ProfileContext)
     
     useEffect(() => {
             getWorkoutsExercises()

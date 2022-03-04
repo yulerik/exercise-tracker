@@ -1,17 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import React, { useContext, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { UserCircleIcon } from '@heroicons/react/outline'
 import { ForumContext } from '../../context/forumProvider'
 
 
-export default function ForumAll(props) {
-    const { handleQuestionSubmit, handleQuestionChange, questionInputs : { question, category, subcategory }, questions, renderForumProvider, setForum } = useContext(ForumContext)
-    // displays options for current input of category
-
-    const [postedQuestions, setPostedQuestions] = useState([])
+export default function ForumAll() {
+    const { handleQuestionSubmit, handleQuestionChange, questionInputs : { question, category }, questions, renderForumProvider, setForum } = useContext(ForumContext)
 
     function handleFilter(event) {
-        const { value, name, checked } = event.target  
+        const { value } = event.target  
         if (value == 'most-commented') {
             setForum(prevState => ({
                 ...prevState,
@@ -104,7 +101,6 @@ export default function ForumAll(props) {
     )
 
     useEffect(() => {
-        setPostedQuestions(questions)
         renderForumProvider()
     },[])
 

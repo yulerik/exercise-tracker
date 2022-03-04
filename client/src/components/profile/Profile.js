@@ -2,35 +2,16 @@ import React, { useContext, useEffect } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { UserContext } from '../../context/UserProvider.js'
 import { ProfileContext } from '../../context/profileProvider'
-import { ExerciseContext } from '../../context/exerciseProvider'
 
 export default function Profile(props){
   const { 
     user: { 
       username 
-    },
-    token
-  } = useContext(UserContext)
-  const {  
-    getAllCategories
-  } = useContext(ExerciseContext) 
-  const {
-    userWorkouts,
-    getWorkoutExercises
-  } = useContext(ProfileContext)
-
-  useEffect(() => {
-    let isMounted = true
-    if (isMounted) {
-      if (token) {
-        props.renderForumProvider()
-        props.getShared()
-        props.getWorkoutsExercises()
-        props.getAllCategories()
-        return () => { isMounted = false }
-      } 
     }
-  }, [])
+  } = useContext(UserContext)
+  const {
+    userWorkouts
+  } = useContext(ProfileContext)
   
   return (
     <div 
@@ -40,30 +21,30 @@ export default function Profile(props){
         id='nav-profile' 
         className='bg-sky-300 w-5/12 rounded-full p-2 flex flex-row justify-around'
         >
-        <Link 
-          className='text-slate-700 btn btn-outline btn-sm rounded-full' 
-          to='/profile' 
-          >
-          Profile
-        </Link>
-        <Link 
-          className='text-slate-700 btn btn-outline btn-sm rounded-full' 
-          to='/profile/user'
-          >
-          New
-        </Link>
-        <Link 
-          className='text-slate-700 btn btn-outline btn-sm rounded-full' 
-          to='/profile/workouts/' 
-          state={userWorkouts}
-          >
-          All
-        </Link>
+          <Link 
+            className='text-slate-700 btn btn-outline btn-sm rounded-full' 
+            to='/profile' 
+            >
+              Profile
+          </Link>
+          <Link 
+            className='text-slate-700 btn btn-outline btn-sm rounded-full' 
+            to='/profile/user'
+            >
+              New
+          </Link>
+          <Link 
+            className='text-slate-700 btn btn-outline btn-sm rounded-full' 
+            to='/profile/workouts/' 
+            state={userWorkouts}
+            >
+              All
+          </Link>
       </nav>
       <h1 
         className="text-3xl text-sky-500 pt-2 pb-2 font-bold" 
         >
-        Welcome @{username}!
+          Welcome @{username}!
       </h1>
       <Outlet  />
     </div>

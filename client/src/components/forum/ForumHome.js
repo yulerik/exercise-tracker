@@ -1,17 +1,21 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { useOutletContext, Link } from 'react-router-dom'
+import React, { useContext, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { AnnotationIcon, SparklesIcon, ThumbUpIcon, UserIcon } from '@heroicons/react/solid'
 import { TrashIcon } from '@heroicons/react/outline'
 import { ForumContext } from '../../context/forumProvider'
 
 export default function ForumHome(props) {
-    const { tokenState, userQuestions, allWorkouts, questionComments, questions, questionDelete, deleteComment, userComments, agreedComments } = useContext(ForumContext)
+    const { tokenState, userQuestions, questionComments, questions, questionDelete, deleteComment, agreedComments } = useContext(ForumContext)
 
     const flexRowCenter = 'flex flex-row gap-1 items-center'
 
     useEffect(() => {
-
-    }, [])
+        let isMounted = true
+        if (isMounted) {
+            props.renderForumProvider()
+            return () => isMounted =false
+        }
+    }, [tokenState])
     
     return (
         <div className='w-full flex flex-col items-center'>
@@ -130,8 +134,8 @@ export default function ForumHome(props) {
                     </h3>
                     <div className='carousel carousel-vertical h-64 gap-1'>
                         {questions.filter(each => {
-                        const liked = each.likes.find(each => each === tokenState.user._id)
-                        if (liked) return each
+                            const liked = each.likes.find(each => each === tokenState.user._id)
+                            if (liked) return each
                         }).map(questionLiked => 
                         <div 
                             className='carousel-item flex-col items-center border-r rounded-xl p-1 border-emerald-400' 
