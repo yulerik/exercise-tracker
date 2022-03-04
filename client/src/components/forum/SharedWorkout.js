@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLocation, useOutletContext } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 export default function SharedWorkout(props) {
     const location = useLocation()

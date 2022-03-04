@@ -26,16 +26,12 @@ export default function ProfileProvider(props) {
     function handleUserWorkoutsSort(event) {
         const { value } = event.target
         if (value === 'most-exercises') {
-            console.log(value)
             setSortUserWorkouts(prevState => userWorkouts.sort((a, b) => {return b.exercises.length - a.exercises.length}))
         } else if (value === 'least-exercises') {
-            console.log(value)
             setSortUserWorkouts(prevState => userWorkouts.sort((a, b) => {return a.exercises.length - b.exercises.length}))
         } else if (value === 'shared') {
-            console.log(value)
             setSortUserWorkouts(prevState => userWorkouts.filter(each => each.shared.isShared))
         } else if (value === 'private') {
-            console.log(value)
             setSortUserWorkouts(prevState => userWorkouts.filter(each => !each.shared.isShared))
         } 
     }

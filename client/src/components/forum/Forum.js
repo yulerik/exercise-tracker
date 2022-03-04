@@ -10,12 +10,11 @@ export default function Forum(props){
       username 
     }
   } = useContext(UserContext)
-  const forumContextValue = useContext(ForumContext)
+  const { renderForumProvider } = useContext(ForumContext)
 
   useEffect(() => {
-    // props.getForumQuestions()
-    props.getWorkouts()
-  },[])
+    renderForumProvider()
+  },[username])
   
   return (
     <div className='forum pt-16 w-full flex flex-col items-center h-full'>

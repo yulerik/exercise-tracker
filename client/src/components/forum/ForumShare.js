@@ -1,14 +1,10 @@
+import React from 'react'
 import { ThumbUpIcon, UserCircleIcon } from '@heroicons/react/solid'
-import React, { useContext, useEffect, useState } from 'react'
-import { useOutletContext, Link } from 'react-router-dom'
+import { useOutletContext } from 'react-router-dom'
 
-export default function ForumShare(props) {
+export default function ForumShare() {
     const { allShared : { shared, allShared, filter }, likeSharedWorkout, handleLikedWorkoutsFilter } = useOutletContext()
 
-    function handleLike(event) {
-        const { id } = event.target
-        console.log(id)
-    }
     const displayFilter = filter.length === 0 ? '' : filter.map(each => 
         <div className='flex flex-col p-1' key={each.sharedObj._id}>
         <span className='flex flex-row justify-between items-center w-full border-b-2 border-sky-700'>

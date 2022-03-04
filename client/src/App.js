@@ -19,6 +19,7 @@ import { ProfileContext } from './context/profileProvider'
 import { ForumContext } from './context/forumProvider'
 import { ExerciseContext } from './context/exerciseProvider'
 
+
 export default function App(){
   const { token } = useContext(UserContext)
   const { userExercises, getAllCategories } = useContext(ExerciseContext)
@@ -27,33 +28,37 @@ export default function App(){
   
   const allForumContext = useContext(ForumContext)
   const allProfileContext = useContext(ProfileContext)
+  
+  const renderApp = () => {
+    renderForumProvider()
+    getWorkoutsExercises()
+    getShared()
+  }
 
   useEffect(() => {
-    let isMounted = true
-    if (isMounted) {
-      if (token) {
-        getAllCategories()
-        getWorkoutsExercises()
-        getShared()
-        console.log('render app')
-        return () => isMounted = false 
-      } 
+    if (token) {
+      let isMounted = true
+      if (isMounted) {
+        renderApp()
+        return () => isMounted = false
+      }
     }
-  }, [])
+    getAllCategories()
+  }, [token])
   
   return (
     <>
       <Routes>
-        <Route path='/' element={<Layout />} >
+        <Route path='/' element={<Layout renderApp={renderApp} />} >
           <Route index element={ token ? <Navigate to='/profile' /> : <Auth /> } />
-          <Route path='profile' element={ token ? <Profile renderForumProvider={renderForumProvider} /> : <Navigate to='/' replace /> } >
+          <Route path='profile' element={ token ? <Profile getAllCategories={getAllCategories} getWorkoutsExercises={getWorkoutsExercises} getShared={getShared} renderForumProvider={renderForumProvider} /> : <Navigate to='/' replace /> } >
             <Route index element={ token ? <ProfileHome /> : <Navigate to='/' replace /> } />
             <Route path='user' element={ token ? <ProfileUser props={userExercises} /> : <Navigate to='/' replace /> } />
             <Route path='workouts' element= { token ? <Workout {...allProfileContext} /> : <Navigate to='/' replace /> } />
             <Route path='workouts/:workoutId' element= { token ? <WorkoutCard props={deleteWorkout} getWorkout={getWorkout} getWorkoutsExercises={getWorkoutsExercises} /> : <Navigate to='/' replace /> } />
           </Route>
           <Route path='forum' element={ token ? <Forum {...allForumContext} /> : <Navigate to='/' replace /> }>
-            <Route index element={ token ? <ForumHome /> : <Navigate to='/' replace /> } /> 
+            <Route index element={ token ? <ForumHome renderForumProvider={renderForumProvider} /> : <Navigate to='/' replace /> } /> 
             <Route path=':forumId' element={ token ? <ForumCard {...oneForum} post={postForumComment} like={likeQuestion} props={getQuestion} /> : <Navigate to='/' replace /> } />
             <Route path='share' element={ token ? <ForumShare /> : <Navigate to='/' replace /> } />
             <Route path='share/:shareId' element={ token ? <SharedWorkout /> : <Navigate to='/' replace /> } />
